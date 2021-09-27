@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+C:/Developer/ESP32_Projects/sistema_riego/build/CMakeFiles/bootloader
+C:/Developer/ESP32_Projects/sistema_riego/build/CMakeFiles/bootloader.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/CMakeFiles/bootloader-complete.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+C:/Developer/ESP32_Projects/sistema_riego/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
