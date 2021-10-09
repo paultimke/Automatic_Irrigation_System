@@ -16,7 +16,7 @@
 #define ADC_VREF                1100
 #define ADC_MAX_VALUE           4095
 #define ADC_SAMPLE_COUNT        10
-#define ADC_CALIBRATION ON      1
+#define ADC_CALIBRATION_ON      1
 
 /*-------------------------Prototypes-------------------------*/
 
