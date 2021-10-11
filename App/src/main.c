@@ -18,12 +18,12 @@ void app_main(void)
 
         //Route reference voltage of adc for calibration
         
-        /*if(adc2_vref_to_gpio(VREF_GPIO) == ESP_OK){
+        if(adc2_vref_to_gpio(VREF_GPIO) == ESP_OK){
             printf("Todo bien");
         }
         else{
             printf("Este pin no jala");
-        }*/
+        }
     }                                                                                                            
     
 }
