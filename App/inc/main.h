@@ -9,8 +9,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "usr_gpio.h"
-#include "usr_adc.h"
 #include "ech20_ec5.h"
+#include "driver/pcnt.h"
 
 
 /*---------------Macros------------------*/

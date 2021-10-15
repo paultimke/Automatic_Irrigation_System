@@ -9,11 +9,11 @@ esp_adc_cal_characteristics_t *usr_adc_init(void)
     
     //Calibration
     esp_adc_cal_characteristics_t *characteristics = calloc(1, sizeof(esp_adc_cal_characteristics_t));
-    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_12, 
+    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 
                               ADC_VREF, characteristics);
 
     //Configure attenuation levels for all channels used
-    adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_0);
+    adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_11);
 
     return characteristics;
 }
