@@ -4,7 +4,7 @@
 #include "driver/gpio.h"
 
 #define LED 2
-#define SENSOR_1 25
+#define SENSOR_EC5_1_PWR 25
 
 void gpio_init(void);
 void gpio_high(int gpio_pin);
