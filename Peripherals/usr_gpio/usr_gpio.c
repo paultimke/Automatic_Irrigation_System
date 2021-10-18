@@ -4,8 +4,11 @@ void gpio_init(void){
     gpio_reset_pin(LED);
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
 
-    gpio_reset_pin(SENSOR_EC5_1_PWR);
-    gpio_set_direction(SENSOR_EC5_1_PWR, GPIO_MODE_OUTPUT);
+    gpio_reset_pin(GPIO_SNSR_EC5_PWR_1);
+    gpio_set_direction(GPIO_SNSR_EC5_PWR_1, GPIO_MODE_OUTPUT);
+    
+    gpio_reset_pin(GPIO_SNSR_EC5_PWR_2);
+    gpio_set_direction(GPIO_SNSR_EC5_PWR_2, GPIO_MODE_OUTPUT);
     return;
 }  
 
