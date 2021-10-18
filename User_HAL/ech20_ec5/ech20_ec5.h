@@ -26,6 +26,6 @@ typedef esp_adc_cal_characteristics_t hmdty_calib_chars_t;
 
 /*-----------------Prototypes----------------*/
 hmdty_calib_chars_t *hal_humidity_sensor_init(void);
-float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num, hmdty_calib_chars_t calib_chars);
+float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num, hmdty_calib_chars_t calib_chars);
 
 #endif

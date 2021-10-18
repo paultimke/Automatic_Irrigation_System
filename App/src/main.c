@@ -9,7 +9,7 @@ void app_main(void)
     hal_flowsensor_init();
     printf("Starting...\n");
 
-    float vwc;
+    float percent, percent2;
     float flow_rate=0.0;
 
     while(1)
@@ -20,9 +20,21 @@ void app_main(void)
 
         //INICIA CODIGO DE SENSOR DE HUMEDAD
         vTaskDelay(500 / portTICK_PERIOD_MS);
-        vwc = hal_humidity_get_vwc(EC5_NUM_1, *hmdty_calib_chars);
-        printf("vwc = %f\n", vwc);
+        percent = hal_humidity_get_percent(EC5_NUM_1, *hmdty_calib_chars);
+        percent2 = hal_humidity_get_percent(EC5_NUM_2, *hmdty_calib_chars);
+        printf("humidity percentage sensor 1 = %f\n", percent);
+        printf("humidity percentage sensor 2 = %f\n", percent2);
         vTaskDelay(500 / portTICK_PERIOD_MS);
+
+        if (percent < 40){
+            gpio_low(GPIO_EVALVE_1);
+            gpio_low(GPIO_EVALVE_2);
+
+        }
+        else {
+            gpio_high(GPIO_EVALVE_1);
+            gpio_high(GPIO_EVALVE_2);
+        }
         
         printf("\n");
     }                                                                                                            

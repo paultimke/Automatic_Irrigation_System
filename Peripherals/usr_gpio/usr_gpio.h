@@ -13,6 +13,8 @@
 #define LED                        2
 #define GPIO_SNSR_EC5_PWR_1        25
 #define GPIO_SNSR_EC5_PWR_2        26
+#define GPIO_EVALVE_1              16
+#define GPIO_EVALVE_2              17
 
 /*-----------------Prototypes----------------*/
 void gpio_init(void);

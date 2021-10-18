@@ -9,6 +9,14 @@ void gpio_init(void){
     
     gpio_reset_pin(GPIO_SNSR_EC5_PWR_2);
     gpio_set_direction(GPIO_SNSR_EC5_PWR_2, GPIO_MODE_OUTPUT);
+
+    gpio_reset_pin(GPIO_EVALVE_1);
+    gpio_set_direction(GPIO_EVALVE_1, GPIO_MODE_OUTPUT);
+    gpio_set_level(GPIO_EVALVE_1,1);
+
+    gpio_reset_pin(GPIO_EVALVE_2);
+    gpio_set_direction(GPIO_EVALVE_2, GPIO_MODE_OUTPUT);
+    gpio_set_level(GPIO_EVALVE_2,1);
     return;
 }  
 
