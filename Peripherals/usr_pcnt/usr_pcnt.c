@@ -4,14 +4,12 @@
  *  - configure and initialize PCNT
  *  - set up the input filter
  */
-void usr_pcnt_init(int unit)
+void usr_pcnt_init(pcnt_unit_t unit)
 {
     /* Prepare configuration for the PCNT unit */
     pcnt_config_t pcnt_config = {
         // Set PCNT input signal and control GPIOs
-        .pulse_gpio_num = PCNT_INPUT_SIG_IO,
         .ctrl_gpio_num = PCNT_INPUT_CTRL_IO,
-        .channel = PCNT_CHANNEL_0,
         .unit = unit,
         // What to do on the positive / negative edge of pulse input?
         .pos_mode = PCNT_COUNT_INC,   // Count up on the positive edge
@@ -20,6 +18,21 @@ void usr_pcnt_init(int unit)
         .lctrl_mode = PCNT_MODE_REVERSE, // Reverse counting direction if low
         .hctrl_mode = PCNT_MODE_KEEP,    // Keep the primary counter mode if high
     };
+
+    switch (unit)
+    {
+    case PCNT_UNIT_1:
+        pcnt_config.pulse_gpio_num = PCNT_1_INPUT_SIG_IO;
+        pcnt_config.channel = PCNT_CHANNEL_1;
+        break;
+    
+    default:
+        //Defaults to PCNT_UNIT_0
+        pcnt_config.pulse_gpio_num = PCNT_0_INPUT_SIG_IO;
+        pcnt_config.channel = PCNT_CHANNEL_0;
+        break;
+    }
+
     /* Initialize PCNT unit */
     pcnt_unit_config(&pcnt_config);
     /* Configure and enable the input filter */
@@ -30,7 +43,7 @@ void usr_pcnt_init(int unit)
 /*
  * Read and return value from pulse counter
  */
-int16_t usr_pcnt_read(int pcnt_unit, int measurement_period)
+int16_t usr_pcnt_read(pcnt_unit_t pcnt_unit, int measurement_period)
 {
     int16_t pulse_count;
     //Clear PCNT's counter 
