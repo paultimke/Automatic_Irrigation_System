@@ -11,7 +11,6 @@ void app_main(void)
 
     float percent, percent2;
     float flow_rate=0.0;
-    float kalman_fix(float zk);
 
     while(1)
     {
