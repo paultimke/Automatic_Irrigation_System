@@ -1,5 +1,25 @@
 #include "ech20_ec5.h"
 
+
+//------------PARTE DE KALMAN (pasa bajas)-------------------------
+
+float kalman_fix(float zk){
+    static float value_ant=400.0;
+    static float Pk_ant = 1.0;
+    static float R = 1.0;
+    static float Q = 0.001;
+    float K,Pk,filtered_value;
+
+    K = (Pk_ant + Q)/(Pk_ant + Q +R);
+    filtered_value = value_ant + K*(zk-value_ant);
+    Pk = (Pk_ant + Q)*(1-K);
+    Pk_ant = Pk;
+    value_ant = filtered_value;
+
+    return (filtered_value);
+}
+
+
 hmdty_calib_chars_t *hal_humidity_sensor_init(void)
 {
     hmdty_calib_chars_t *calib_chars = usr_adc_init();
@@ -51,7 +71,8 @@ float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num, hmdty_calib_chars_
 
     uint32_t adc_result = usr_adc_getResult(adc_channel, adc_characteristics);
     printf("ADC result: %d mV\n", adc_result);
-    float adc_float = adc_result/1.0;
+    float adc_kalman = kalman_fix(adc_result);
+    float adc_float = adc_kalman/1.0;
     vwc = ((0.00119)*(adc_float)-0.401);        //Calcular VWC
 
     vTaskDelay(50/portTICK_PERIOD_MS);              //50 ms despues de lectura
