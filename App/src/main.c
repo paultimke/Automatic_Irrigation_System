@@ -10,7 +10,7 @@ void app_main(void)
     printf("Starting...\n");
 
     float percent, percent2;
-    float flow_rate=0.0;
+    float flow_rate = 0.0;
 
     while(1)
     {
@@ -27,13 +27,10 @@ void app_main(void)
         vTaskDelay(500 / portTICK_PERIOD_MS);
 
         if (percent < 40){
-            gpio_low(GPIO_EVALVE_1);
-            gpio_low(GPIO_EVALVE_2);
-
+            hal_evalve_open(EVALVE_UNIT_0);
         }
         else {
-            gpio_high(GPIO_EVALVE_1);
-            gpio_high(GPIO_EVALVE_2);
+            hal_evalve_close(EVALVE_UNIT_0);
         }
         
         printf("\n");

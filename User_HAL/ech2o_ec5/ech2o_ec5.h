@@ -3,8 +3,8 @@
  * Tecnologico de Monterrey, Campus Chihuahua
 */
 
-#ifndef _ECH20_EC5_
-#define _ECH20_EC5_
+#ifndef _ECH2O_EC5_H_
+#define _ECH2O_EC5_H_
 
 #include "usr_adc.h"
 #include "usr_gpio.h"
@@ -28,4 +28,4 @@ typedef esp_adc_cal_characteristics_t hmdty_calib_chars_t;
 hmdty_calib_chars_t *hal_humidity_sensor_init(void);
 float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num, hmdty_calib_chars_t calib_chars);
 
-#endif
+#endif  //_ECH2O_EC5_H_
