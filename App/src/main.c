@@ -7,7 +7,7 @@ void app_main(void)
     gpio_init();
     hmdty_calib_chars_t *hmdty_calib_chars = hal_humidity_sensor_init();
     hal_flowsensor_init();
-    printf("Starting...\n");
+    //printf("Starting...\n");
 
     float percent, percent2;
     float flow_rate = 0.0;
