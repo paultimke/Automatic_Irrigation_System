@@ -1,4 +1,4 @@
-#include "ech20_ec5.h"
+#include "ech2o_ec5.h"
 
 
 //------------PARTE DE KALMAN (pasa bajas)-------------------------
@@ -60,7 +60,7 @@ float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num, hmdty_calib_chars_
         break;
 
     default:
-        //Defaults to EC5 sensor number 1 (EC5_NUM_1)
+        printf("Invalid argument entered, insert a unit of EC5 sensor\n");
         adc_channel = ADC1_CHANNEL_0;
         sensor_gpio = SENSOR_EC5_PWR_1;
         break;
@@ -80,7 +80,6 @@ float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num, hmdty_calib_chars_
     vTaskDelay(50/portTICK_PERIOD_MS); 
 
     float percent = vwc * 100 / 0.85;
-
 
     return percent;
 }

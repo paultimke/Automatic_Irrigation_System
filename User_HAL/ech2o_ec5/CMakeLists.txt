@@ -1,4 +1,4 @@
-set(SOURCES ech20_ec5.c)
+set(SOURCES ech2o_ec5.c)
 
 idf_component_register(SRCS ${SOURCES}
                         INCLUDE_DIRS .
