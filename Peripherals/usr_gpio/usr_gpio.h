@@ -1,12 +1,24 @@
+/**
+ * Equipo 5 - Automatizacion Industrial
+ * Tecnologico de Monterrey, Campus Chihuahua
+*/
+
 #ifndef _USR_GPIO_H_
 #define _USR_GPIO_H_
 
+/*----------------Includes------------------*/
 #include "driver/gpio.h"
 
-#define LED 2
+/*-----------------Macros-------------------*/
+#define LED                        2
+#define GPIO_SNSR_EC5_PWR_1        25
+#define GPIO_SNSR_EC5_PWR_2        26
+#define GPIO_EVALVE_1              16
+#define GPIO_EVALVE_2              17
 
+/*-----------------Prototypes----------------*/
 void gpio_init(void);
-void led_on(void);
-void led_off(void);
+void gpio_high(int gpio_pin);
+void gpio_low(int gpio_pin);
 
 #endif //_USR_GPIO_H_
