@@ -13,6 +13,7 @@
 #define SENSOR_EC5_PWR_1    GPIO_SNSR_EC5_PWR_1
 #define SENSOR_EC5_PWR_2    GPIO_SNSR_EC5_PWR_2
 
+/*-------------------Types------------------*/
 typedef enum {
     EC5_NUM_1 = 1,
     EC5_NUM_2 = 2,
@@ -22,10 +23,8 @@ typedef enum {
     EC5_NUM_6 = 6
 } hmdty_sensor_num_t;
 
-typedef esp_adc_cal_characteristics_t hmdty_calib_chars_t;
-
 /*-----------------Prototypes----------------*/
-hmdty_calib_chars_t *hal_humidity_sensor_init(void);
-float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num, hmdty_calib_chars_t calib_chars);
+void hal_humidity_sensor_init();
+float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num);
 
 #endif  //_ECH2O_EC5_H_

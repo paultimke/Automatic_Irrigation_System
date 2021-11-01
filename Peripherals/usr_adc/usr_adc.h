@@ -18,20 +18,13 @@
 #define ADC_SAMPLE_COUNT        10
 #define ADC_CALIBRATION_ON      1
 
+/*---------------------------Variables----------------------*/
+extern esp_adc_cal_characteristics_t *adc_characteristics;
+
 /*-------------------------Prototypes-------------------------*/
 
-/**
-*@brief Initializes configuration settings for channels of both ADCs and performs calibration
-*/
-esp_adc_cal_characteristics_t *usr_adc_init(void);
-
-
-/**
- *@brief Returns the result of the chosen channel of ADC in mV
- *@param channel ADC channel
- *@return 32-bit result of voltage reading in mV
- */
-uint32_t usr_adc_getResult(adc_channel_t channel, esp_adc_cal_characteristics_t* adc_calib_chars);
+void usr_adc_init(void);
+uint32_t usr_adc_getResult(adc_channel_t channel);
 
 
 #endif //_USR_ADC_H_
