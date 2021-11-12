@@ -4,10 +4,15 @@
 void app_main(void)
 {
     //Initializing
+    printf("Inicializando...\n");
     gpio_init();
     hal_humidity_sensor_init();
-    //hal_flowsensor_init();
-    //printf("Starting...\n");
+    hal_flowsensor_init();
+    mqtt_init();
+    mqtt_app_start();
+
+    //char str_temperature[10];
+	char str_humidity[10];
 
     float percent;
     //percent2;
@@ -33,7 +38,18 @@ void app_main(void)
         else {
             hal_evalve_close(EVALVE_UNIT_0);
         }
+
+        // Prepare data to transmit
+        sprintf(str_humidity,"%.1f", (float)percent);
+
+        // Publish message
+        //esp_mqtt_client_publish(client, "/clima/temperatura", str_temperature, 0, 1, 0);
+        //printf("Sent publish successful to /clima/temperatura\n");
+        esp_mqtt_client_publish(client, "/riego2/sensor/humedad", str_humidity, 0, 1, 0);
+        printf("Sent publish successful to /riego2/sensor/humedad\n");
         
+        vTaskDelay(800/portTICK_PERIOD_MS);
+
         printf("\n");
     }                                                                                                            
 }
