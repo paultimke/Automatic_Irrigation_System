@@ -10,8 +10,10 @@
 #include "usr_gpio.h"
 
 /*-------------------Macros-----------------*/
-#define SENSOR_EC5_PWR_1    GPIO_SNSR_EC5_PWR_1
+#define SENSOR_EC5_PWR_1    GPIO_SNSR_EC5_PWR_1   
 #define SENSOR_EC5_PWR_2    GPIO_SNSR_EC5_PWR_2
+#define SENSOR_EC5_PWR_3    GPIO_SNSR_EC5_PWR_3   
+#define SENSOR_EC5_PWR_4    GPIO_SNSR_EC5_PWR_4
 
 /*-------------------Types------------------*/
 typedef enum {

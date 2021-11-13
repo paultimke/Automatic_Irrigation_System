@@ -44,20 +44,12 @@ float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num)
         sensor_gpio = SENSOR_EC5_PWR_2; 
         break;
     case EC5_NUM_3:
-        adc_channel = ADC1_CHANNEL_1;
-        sensor_gpio = SENSOR_EC5_PWR_1;
+        adc_channel = ADC1_CHANNEL_6;
+        sensor_gpio = SENSOR_EC5_PWR_3;
         break;
     case EC5_NUM_4:
-        adc_channel = ADC1_CHANNEL_1;
-        sensor_gpio = SENSOR_EC5_PWR_2;
-        break;
-    case EC5_NUM_5:
-        adc_channel = ADC1_CHANNEL_1;
-        sensor_gpio = SENSOR_EC5_PWR_1;
-        break;
-    case EC5_NUM_6:
-        adc_channel = ADC1_CHANNEL_1;
-        sensor_gpio = SENSOR_EC5_PWR_2;
+        adc_channel = ADC1_CHANNEL_7;
+        sensor_gpio = SENSOR_EC5_PWR_4;
         break;
 
     default:
