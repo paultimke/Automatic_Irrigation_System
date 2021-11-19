@@ -1,6 +1,8 @@
 #ifndef USR_MQTT_H
 #define USR_MQTT_H
 
+#include <string.h>
+#include <stdlib.h>
 #include "esp_netif.h"
 #include "esp_wifi.h"
 #include "esp_system.h"
@@ -19,7 +21,11 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
 void mqtt_app_start(void);
 void mqtt_init(void);
 
-esp_mqtt_client_handle_t client;
+extern esp_mqtt_client_handle_t client;
+
+extern int prueba_claves;
+
+
 
 
 #endif //USR_MQTT.H

@@ -1,16 +1,17 @@
 #include "usr_mqtt.h"
 
 static const char *TAG = "MQTT_CLIENT";
+
 esp_mqtt_client_handle_t client;
+
+int prueba_claves;
 
 void mqtt_app_start(void)
 {
     esp_mqtt_client_config_t mqtt_cfg = {
         .uri = CONFIG_BROKER_URL,
-        //.uri = ""
     };
 
-    //esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
     client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, client);
     esp_mqtt_client_start(client);
@@ -41,12 +42,19 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
 {
     esp_mqtt_client_handle_t client = event->client;
     int msg_id;
+    static char strTopic[20];
+    static char strData[10];
+    
     // your_context_t *context = event->context;
     switch (event->event_id) {
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-            msg_id = esp_mqtt_client_subscribe(client, "/clima/aire", 0);
-            ESP_LOGI(TAG, "sent subscribe successful to /clima/aire, msg_id=%d", msg_id);
+            msg_id = esp_mqtt_client_subscribe(client, "/riego2/valvula1", 0);
+            ESP_LOGI(TAG, "sent subscribe successful to /riego2/valvula1, msg_id=%d", msg_id);
+
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/riego2/valvula2", 0);
+            ESP_LOGI(TAG, "sent subscribe successful to /riego2/valvula2, msg_id=%d", msg_id);
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -62,8 +70,29 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             break;
         case MQTT_EVENT_DATA:
             ESP_LOGI(TAG, "MQTT_EVENT_DATA");
-            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-            printf("DATA=%.*s\r\n", event->data_len, event->data);
+            sprintf(strTopic,"%.*s", event->topic_len, event->topic);
+            
+            sprintf(strData,"%.*s", event->data_len, event->data);
+
+            if(strcmp(strTopic, "/riego2/valvula1") == 0){
+                if(strcmp(strData, "ON") == 0){
+                    prueba_claves = 1;
+                    
+            }
+            else {
+                prueba_claves = 0;
+            }
+            }
+        
+            if(strcmp(strTopic, "/riego2/valvula2") == 0){
+                if(strcmp(strData, "ON") == 0){
+                    prueba_claves = 3;
+                }
+            else {
+                prueba_claves = 2;
+            }
+            }
+
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -71,6 +100,7 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
         default:
             ESP_LOGI(TAG, "Other event id:%d", event->event_id);
             break;
+
     }
     return ESP_OK;
 }
