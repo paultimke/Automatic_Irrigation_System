@@ -6,11 +6,9 @@ void hal_flowsensor_init(void)
 
     usr_pcnt_init(PCNT_UNIT_0);         //Initialized for Flow sensor 0
     pcnt_counter_pause(PCNT_UNIT_0);
-
-    #ifdef FSENSOR_1_ON                 //Defined in flow_sensor.h
+          
     usr_pcnt_init(PCNT_UNIT_1);         //Initialized for Flow sensor 1
     pcnt_counter_pause(PCNT_UNIT_1);
-    #endif
 
     return;
 }

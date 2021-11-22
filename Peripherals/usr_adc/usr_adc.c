@@ -14,12 +14,14 @@ void usr_adc_init(void)
     //Calibration
     adc_characteristics = (esp_adc_cal_characteristics_t*) calloc(1, sizeof(esp_adc_cal_characteristics_t));
     //adc_characteristics gets initialized
-    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 
+    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_12, 
                               ADC_VREF, adc_characteristics);  
 
     //Configure attenuation levels for all channels used
-    adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_11);
-    adc1_config_channel_atten(ADC1_CHANNEL_3, ADC_ATTEN_DB_11);
+    adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_0);
+    adc1_config_channel_atten(ADC1_CHANNEL_3, ADC_ATTEN_DB_0);
+    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_0);
+    adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_0);
 
     return;
 }
@@ -47,8 +49,9 @@ uint32_t usr_adc_getResult(adc_channel_t channel)
     #else
       uint32_t result = adc_reading * ADC_VREF / ADC_MAX_VALUE;
     #endif
+    printf("\nVoltage: %d\n", result);
 
-    return result;
+    return adc_reading;
 }
 
 

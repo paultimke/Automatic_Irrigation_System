@@ -14,8 +14,8 @@ typedef enum{
 } evalve_unit_t;
 
 /*--------------------Prototypes-------------------*/
-void hal_evalve_open(evalve_unit_t evalve_unit);
-void hal_evalve_close(evalve_unit_t evalve_unit);
+void hal_evalve_on(evalve_unit_t evalve_unit);
+void hal_evalve_off(evalve_unit_t evalve_unit);
 
 
 #endif //_SOLENOID_VALVE_H_
