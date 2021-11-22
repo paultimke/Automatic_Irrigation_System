@@ -1,10 +1,8 @@
 #include "usr_mqtt.h"
 
 static const char *TAG = "MQTT_CLIENT";
-
 esp_mqtt_client_handle_t client;
-
-int prueba_claves;
+uint8_t valve_state;
 
 void mqtt_app_start(void)
 {
@@ -70,26 +68,26 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             break;
         case MQTT_EVENT_DATA:
             ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+            //Guardar evento en variables para hacer la comparación
             sprintf(strTopic,"%.*s", event->topic_len, event->topic);
-            
             sprintf(strData,"%.*s", event->data_len, event->data);
 
             if(strcmp(strTopic, "/riego2/valvula1") == 0){
                 if(strcmp(strData, "ON") == 0){
-                    prueba_claves = 1;
+                    valve_state = ROW1_VALVE_ON;
                     
             }
             else {
-                prueba_claves = 0;
+                valve_state = ROW1_VALVE_OFF;
             }
             }
         
             if(strcmp(strTopic, "/riego2/valvula2") == 0){
                 if(strcmp(strData, "ON") == 0){
-                    prueba_claves = 3;
+                    valve_state = ROW2_VALVE_ON;
                 }
             else {
-                prueba_claves = 2;
+                valve_state = ROW2_VALVE_OFF;
             }
             }
 

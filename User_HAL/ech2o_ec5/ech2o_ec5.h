@@ -6,6 +6,7 @@
 #ifndef _ECH2O_EC5_H_
 #define _ECH2O_EC5_H_
 
+#include <math.h>
 #include "usr_adc.h"
 #include "usr_gpio.h"
 
@@ -27,6 +28,6 @@ typedef enum {
 
 /*-----------------Prototypes----------------*/
 void hal_humidity_sensor_init();
-float hal_humidity_get_percent(hmdty_sensor_num_t sensor_num);
+float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num);
 
 #endif  //_ECH2O_EC5_H_
