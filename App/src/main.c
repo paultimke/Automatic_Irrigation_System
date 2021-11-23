@@ -139,50 +139,6 @@ void nodered_task(void* arg)
         else{
             printf("ERROR");
         }
-        
-        /*---------------------------
-        switch (valve_state)
-        {
-        case ROW1_VALVE_OFF:
-            if(isRow1_active == true){
-                vTaskResume(valve_row1_handle);
-                hal_evalve_off(EVALVE_UNIT_0);
-                sprintf(str_is_valve1_on, "%f", 0.0);
-                isRow1_active = false;
-            }
-            break;
-
-        case ROW1_VALVE_ON:
-            if(isRow1_active == false){
-                vTaskSuspend(valve_row1_handle);
-                hal_evalve_on(EVALVE_UNIT_0);
-                sprintf(str_is_valve1_on, "%f", 1.0);
-                isRow1_active = true;
-            }
-            break;
-
-        case ROW2_VALVE_ON:
-            if(isRow2_active == false){
-                vTaskSuspend(valve_row2_handle);
-                hal_evalve_on(EVALVE_UNIT_1);
-                sprintf(str_is_valve2_on, "%f", 1.0);
-                isRow2_active = true;
-            }
-            break;
-
-        case ROW2_VALVE_OFF:
-            if(isRow2_active == true){
-                vTaskResume(valve_row2_handle);
-                hal_evalve_off(EVALVE_UNIT_1);
-                sprintf(str_is_valve2_on, "%f", 0.0);
-                isRow2_active = false;
-            }
-            break;
-
-        default:
-            printf("ERROR");
-            break;
-        }*/
 
         
         //Safety
