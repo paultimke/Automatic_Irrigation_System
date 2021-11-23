@@ -80,7 +80,7 @@ static float kalman_Sensor_1(float zk){
     static float value_ant_1 = 3000.0;
     static float Pk_ant_1 = 1.0;
     static float R_1 = 1.0;
-    static float Q_1 = 1.0;
+    static float Q_1 = 0.1;
     static float K_1;
     float Pk, filtered_value;
 
@@ -97,7 +97,7 @@ static float kalman_Sensor_2(float zk){
     static float value_ant_2 = 3000.0;
     static float Pk_ant_2 = 1.0;
     static float R_2 = 1.0;
-    static float Q_2 = 1.0;
+    static float Q_2 = 0.1;
     static float K_2;
     float Pk, filtered_value;
 
@@ -114,7 +114,7 @@ static float kalman_Sensor_3(float zk){
     static float value_ant_3 = 3000.0;
     static float Pk_ant_3 = 1.0;
     static float R_3 = 1.0;
-    static float Q_3 = 1.0;
+    static float Q_3 = 0.1;
     static float K_3;
     float Pk, filtered_value;
 
@@ -131,7 +131,7 @@ static float kalman_Sensor_4(float zk){
     static float value_ant_4 = 3000.0;
     static float Pk_ant_4 = 1.0;
     static float R_4 = 1.0;
-    static float Q_4 = 1.0;
+    static float Q_4 = 0.1;
     static float K_4;
     float Pk, filtered_value;
 
