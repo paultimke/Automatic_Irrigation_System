@@ -5,6 +5,7 @@ TaskHandle_t humidity_handle = NULL;
 TaskHandle_t valve_row1_handle = NULL;
 TaskHandle_t valve_row2_handle = NULL;
 TaskHandle_t nodered_handle = NULL;
+TaskHandle_t display_hanlde = NULL;
 
 float flow_rate_s1, flow_rate_s2;
 float row1_humidity, row2_humidity;
@@ -24,7 +25,6 @@ void flow_task(void* arg)
 
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
-    vTaskDelete(NULL);
 }
 
 void humidity_task(void* arg)
@@ -48,7 +48,6 @@ void humidity_task(void* arg)
         vTaskDelay(2000/portTICK_PERIOD_MS);
         
     }
-    vTaskDelete(NULL);
 }
 
 void valve_row1_task(void* arg)
@@ -67,7 +66,6 @@ void valve_row1_task(void* arg)
         }
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
-    vTaskDelete(NULL);
 }
 
 void valve_row2_task(void* arg)
@@ -86,7 +84,6 @@ void valve_row2_task(void* arg)
 
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
-    vTaskDelete(NULL);
 }
 
 void nodered_task(void* arg)
@@ -157,19 +154,27 @@ void nodered_task(void* arg)
 
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
-
-    vTaskDelete(NULL);
 }
 
+void display_task(void* arg)
+{
+    while(1){
+        hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
+    }
+    
+}
 
 void app_main(void)
 {
+
     //Initializing
     printf("Inicializando...\n");
     gpio_init();
+    hal_OLED_init();
     mqtt_init();
     mqtt_app_start();
 
+    xTaskCreate(display_task, "display_task", 8142, NULL, 10, &display_hanlde);
     xTaskCreate(flow_task, "flow_task", 2048, NULL, 10, &flow_handle);
     xTaskCreate(humidity_task, "humidity_task", 2048, NULL, 10, &humidity_handle);
     xTaskCreate(valve_row1_task, "valve_row1_task", 2048, NULL, 10, &valve_row1_handle);

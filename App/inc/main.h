@@ -18,6 +18,7 @@
 #include "flow_sensor.h"
 #include "ech2o_ec5.h"
 #include "solenoid_valve.h"
+#include "hal_display.h"
 
 
 
