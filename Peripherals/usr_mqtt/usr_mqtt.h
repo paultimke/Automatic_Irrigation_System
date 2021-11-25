@@ -17,6 +17,7 @@
 #include "lwip/netdb.h"
 
 /*----------------Macros-----------------*/
+#define MQTT_TAG            ("MQTT")
 #define ROW1_VALVE_OFF      (0)
 #define ROW1_VALVE_ON       (1)
 #define ROW2_VALVE_OFF      (2)

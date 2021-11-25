@@ -10,13 +10,15 @@
 #include "driver/gpio.h"
 
 /*-----------------Macros-------------------*/
-#define LED                        2
-#define GPIO_SNSR_EC5_PWR_1        25
-#define GPIO_SNSR_EC5_PWR_2        26
-#define GPIO_SNSR_EC5_PWR_3        27
-#define GPIO_SNSR_EC5_PWR_4        14
-#define GPIO_EVALVE_1              16
-#define GPIO_EVALVE_2              17
+#define GPIO_SNSR_EC5_PWR_1         25
+#define GPIO_SNSR_EC5_PWR_2         26
+#define GPIO_SNSR_EC5_PWR_3         27
+#define GPIO_SNSR_EC5_PWR_4         14
+#define GPIO_EVALVE_1               16
+#define GPIO_EVALVE_2               17
+
+#define BTN_0                       GPIO_NUM_15
+#define GPIO_OUTPUT_PIN_SEL         (1ULL<<BTN_0)
 
 /*-----------------Prototypes----------------*/
 void gpio_init(void);
