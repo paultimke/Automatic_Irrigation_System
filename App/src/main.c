@@ -30,7 +30,7 @@ void IRAM_ATTR timer_isr_handler(void* arg)
     //Timer overflows each second
     timer_overflow++;
     TIMERG0.int_clr_timers.t0 = 1; //clear interrupt bit
-    if(timer_overflow > 20){
+    if(timer_overflow > 25){
         /** Enviar queue para apagar display;
          * Recibir queue que se mande desde task de display como acknowledge
          * de que ya se apago
@@ -119,7 +119,6 @@ void valve_row2_task(void* arg)
 
 void nodered_task(void* arg)
 {
-
 	char str_humidity_1[10], str_humidity_2[10];
     char str_flow_1[10], str_flow_2[10];
     bool isRow1_active = false, isRow2_active = false;
@@ -164,7 +163,7 @@ void nodered_task(void* arg)
             sprintf(str_is_valve2_on, "%f", 0.0);
             isRow2_active = false;
         }
-        else{
+        else if ((valve_state < ROW1_VALVE_OFF) || valve_state > ROW1_VALVE_OFF){
             ESP_LOGE(MQTT_TAG, "Mqtt error");
         }
 
@@ -197,9 +196,9 @@ void display_off_task(void* arg)
 
 void display_task(void* arg)
 {
+    char flow1_string[15], flow2_string[15], hum1_string[15], hum2_string[15];
     bool isButtonPushed;
     while(1){
-        hal_OLED_print("Que rollillo", 2, 10);
         if(xQueueReceiveFromISR(gpio_evt_queue, &isButtonPushed, NULL) == pdTRUE)
         {
             //--Debouncing for button press--
@@ -214,6 +213,16 @@ void display_task(void* arg)
             }
             else {isButtonPushed = false;}
         }
+
+        sprintf(flow1_string, "Flujo F1: %.1f", flow_rate_s1);
+        sprintf(flow2_string, "Flujo F2: %.1f", flow_rate_s2);
+        sprintf(hum1_string, "Hum F1: %.1f", row1_humidity);
+        sprintf(hum2_string, "Hum F2: %.1f", row2_humidity);
+
+        hal_OLED_print(flow1_string, 1, 2);
+        hal_OLED_print(flow2_string, 3, 2);
+        hal_OLED_print(hum1_string, 5, 2);
+        hal_OLED_print(hum2_string, 7, 2);
     
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
@@ -224,11 +233,15 @@ void app_main(void)
 {
     //Initializing
     printf("Inicializando...\n");
+    hal_OLED_init();
+    hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
+
     gpio_init();
     usr_timer_init();
-    hal_OLED_init();
     mqtt_init();
     mqtt_app_start();
+
+    hal_OLED_clear();
 
     //create a queue to handle gpio event from isr
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
