@@ -24,6 +24,9 @@ void usr_timer_init(void)
     }; // default clock source is APB
     timer_init(TMR_GROUP_0, TMR_NUM_0, &config);
     timer_set_counter_value(TMR_GROUP_0, TMR_NUM_0, 0);
+
+    //timer_init(TMR_GROUP_0, TMR_NUM_1, &config);
+    //timer_disable_intr(TMR_GROUP_0, TMR_NUM_1);
     
     //Time base is (apb_clock)/(TIMER_DIVIDER) = 40Mhz/64000 = 625
     timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_0, 625*2*(1));  //Sets overflow value to 1 second (time base is 625)

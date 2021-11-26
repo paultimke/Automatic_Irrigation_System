@@ -72,6 +72,7 @@ void valve_row1_task(void* arg)
         if(global_hum_row1 == 0){
             desired_hum_row1 = DEFAULT_HUM_LIMIT;
         }
+        printf("\n\n\nDESIRED: %d\n", desired_hum_row1);
 
         if (row1_humidity < desired_hum_row1){
             hal_evalve_on(EVALVE_UNIT_0);
@@ -97,7 +98,7 @@ void valve_row2_task(void* arg)
         if(global_hum_row2 == 0){
             desired_hum_row2 = DEFAULT_HUM_LIMIT;
         }
-
+        printf("\n\n\nDESIRED: %d\n", desired_hum_row2);
 
         if (row2_humidity < desired_hum_row2){
             hal_evalve_on(EVALVE_UNIT_1);

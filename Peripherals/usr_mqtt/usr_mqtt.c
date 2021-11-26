@@ -81,24 +81,20 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             sprintf(strTopic,"%.*s", event->topic_len, event->topic);
             sprintf(strData,"%.*s", event->data_len, event->data);
 
-            if(strcmp(strTopic, "/riego2/valvula1") == 0){
-                if(strcmp(strData, "ON") == 0){
-                    valve_state = ROW1_VALVE_ON;
-                    
+            if((strcmp(strTopic, "/riego2/valvula1") == 0) && (strcmp(strData, "ON") == 0)){
+                valve_state = ROW1_VALVE_ON;     
             }
             else {
                 valve_state = ROW1_VALVE_OFF;
             }
-            }
         
-            if(strcmp(strTopic, "/riego2/valvula2") == 0){
-                if(strcmp(strData, "ON") == 0){
-                    valve_state = ROW2_VALVE_ON;
-                }
+            if((strcmp(strTopic, "/riego2/valvula2") == 0) && (strcmp(strData, "ON") == 0)){
+                valve_state = ROW2_VALVE_ON;
+            }
             else {
                 valve_state = ROW2_VALVE_OFF;
             }
-            }
+
             if(strcmp(strTopic, "/riego2/desired_hum1") == 0){
                 global_hum_row1 = (uint8_t) atoi(strData);
             }
