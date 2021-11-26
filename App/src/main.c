@@ -1,22 +1,7 @@
 #include "main.h"
 
-//Task Handles
-TaskHandle_t flow_handle = NULL;
-TaskHandle_t humidity_handle = NULL;
-TaskHandle_t valve_row1_handle = NULL;
-TaskHandle_t valve_row2_handle = NULL;
-TaskHandle_t nodered_handle = NULL;
-TaskHandle_t display_task_handle = NULL;
-TaskHandle_t display_off_task_handle = NULL;
-
 //Queues
 static xQueueHandle gpio_evt_queue = NULL;
-
-//Global Variables
-float flow_rate_s1, flow_rate_s2;
-float row1_humidity, row2_humidity;
-char str_is_valve1_on[10], str_is_valve2_on[10];
-volatile uint8_t timer_overflow = 0;
 
 static void IRAM_ATTR gpio_isr_handler(void* arg)
 {
@@ -29,24 +14,21 @@ void IRAM_ATTR timer_isr_handler(void* arg)
 {
     //Timer overflows each second
     timer_overflow++;
-    TIMERG0.int_clr_timers.t0 = 1; //clear interrupt bit
+    TIMERG0.int_clr_timers.t0 = 1; // Clear interrupt bit
     if(timer_overflow > 25){
-        /** Enviar queue para apagar display;
-         * Recibir queue que se mande desde task de display como acknowledge
-         * de que ya se apago
-        */
+
+        /** Resume a task specifically to clear display before suspending the
+         * display task, to ensure that when it is suspended, there are no pixels left on.
+         */
         xTaskResumeFromISR(display_off_task_handle);
         vTaskSuspend(display_task_handle);
     }
-    TIMERG0.hw_timer[0].config.alarm_en = TIMER_ALARM_EN;   //re-enable alarm for next interrupt
+    TIMERG0.hw_timer[0].config.alarm_en = TIMER_ALARM_EN;   //Re-enable alarm for next interrupt
 }
 
 void flow_task(void* arg)
 {
-    hal_flowsensor_init();
-
     while(1){
-        //CODIGO DE SENSOR DE FLUJO
         flow_rate_s1 = hal_flowsensor_read(FLOW_SENSOR_1);
         flow_rate_s2 = hal_flowsensor_read(FLOW_SENSOR_2);
         printf("Flow rate 1: %5.2f L/min\n",flow_rate_s1);
@@ -58,12 +40,10 @@ void flow_task(void* arg)
 
 void humidity_task(void* arg)
 {
-    hal_humidity_sensor_init();
     float water_percent_s1, water_percent_s2, water_percent_s3, water_percent_s4;
 
     while(1){
 
-        //INICIA CODIGO DE SENSOR DE HUMEDAD
         vTaskDelay(500 / portTICK_PERIOD_MS);
         water_percent_s1 = hal_humidity_get_vwc(EC5_NUM_1);
         water_percent_s2 = hal_humidity_get_vwc(EC5_NUM_2);
@@ -74,7 +54,7 @@ void humidity_task(void* arg)
         printf("Row 1 Humidity: %f\n", row1_humidity);
         printf("Row 2 Humidity: %f\n", row2_humidity);
 
-        printf("timer overflow = %d\n", timer_overflow);
+        printf("Number of timer overflows = %d\n", timer_overflow);
 
         vTaskDelay(2000/portTICK_PERIOD_MS);
         
@@ -83,10 +63,17 @@ void humidity_task(void* arg)
 
 void valve_row1_task(void* arg)
 {
+    uint8_t desired_hum_row1;
+
     while(1){
         printf("********TASK ACTIVA VALVE 1********\n\n");
 
-        if (row1_humidity < 40){
+        desired_hum_row1 = global_hum_row1;
+        if(global_hum_row1 == 0){
+            desired_hum_row1 = DEFAULT_HUM_LIMIT;
+        }
+
+        if (row1_humidity < desired_hum_row1){
             hal_evalve_on(EVALVE_UNIT_0);
             sprintf(str_is_valve1_on, "%f", 1.0);
 
@@ -101,8 +88,16 @@ void valve_row1_task(void* arg)
 
 void valve_row2_task(void* arg)
 {
+    uint8_t desired_hum_row2;
+
     while(1){
         printf("********TASK ACTIVA VALVE 2********\n\n");
+
+        desired_hum_row2 = global_hum_row2;
+        if(global_hum_row2 == 0){
+            desired_hum_row2 = DEFAULT_HUM_LIMIT;
+        }
+
         if (row2_humidity < 40){
             hal_evalve_on(EVALVE_UNIT_1);
             sprintf(str_is_valve2_on, "%f", 1.0);
@@ -120,6 +115,7 @@ void valve_row2_task(void* arg)
 void nodered_task(void* arg)
 {
 	char str_humidity_1[10], str_humidity_2[10];
+    //char desired_hum_1[10], desired_hum_2[10];
     char str_flow_1[10], str_flow_2[10];
     bool isRow1_active = false, isRow2_active = false;
 
@@ -140,44 +136,39 @@ void nodered_task(void* arg)
         printf("Valve state: %d\n", valve_state);
 
         if((valve_state == ROW1_VALVE_OFF) && (isRow1_active == true)){
-            vTaskResume(valve_row1_handle);
+            vTaskResume(valve_row1_task_handle);
             hal_evalve_off(EVALVE_UNIT_0);
             sprintf(str_is_valve1_on, "%f", 0.0);
             isRow1_active = false;
         }
         else if((valve_state == ROW1_VALVE_ON) && (isRow1_active == false)){
-            vTaskSuspend(valve_row1_handle);
+            vTaskSuspend(valve_row1_task_handle);
             hal_evalve_on(EVALVE_UNIT_0);
             sprintf(str_is_valve1_on, "%f", 1.0);
             isRow1_active = true;
         }
         else if((valve_state == ROW2_VALVE_ON) && (isRow2_active == false)){
-            vTaskSuspend(valve_row2_handle);
+            vTaskSuspend(valve_row2_task_handle);
             hal_evalve_on(EVALVE_UNIT_1);
             sprintf(str_is_valve2_on, "%f", 1.0);
             isRow2_active = true;
         }
         else if((valve_state == ROW2_VALVE_OFF) && (isRow2_active == true)){
-            vTaskResume(valve_row2_handle);
+            vTaskResume(valve_row2_task_handle);
             hal_evalve_off(EVALVE_UNIT_1);
             sprintf(str_is_valve2_on, "%f", 0.0);
             isRow2_active = false;
         }
-        else if ((valve_state < ROW1_VALVE_OFF) || valve_state > ROW1_VALVE_OFF){
-            ESP_LOGE(MQTT_TAG, "Mqtt error");
-        }
-
         
-        //Safety
+        /** Safety measure to prevent valves being left on indefinetely, in case it
+         * is forgotten to turn them off, to avoid flooding.
+         */
         if((row1_humidity >70) || (row2_humidity >70)){
-            vTaskResume(valve_row1_handle);
-            vTaskResume(valve_row2_handle);
+            vTaskResume(valve_row1_task_handle);
+            vTaskResume(valve_row2_task_handle);
             isRow1_active = false;
             isRow2_active = false;
         }
-
-        printf("Is ROW 1 ACTIVE: %d\n", (int)isRow1_active);
-        printf("IS ROW 2 ACTIVE: %d\n", (int)isRow2_active);
 
         esp_mqtt_client_publish(client, "/riego2/estadovalvula1", str_is_valve1_on, 0, 1, 0);
         esp_mqtt_client_publish(client, "/riego2/estadovalvula2", str_is_valve2_on, 0, 1, 0);
@@ -189,7 +180,7 @@ void nodered_task(void* arg)
 void display_off_task(void* arg)
 {
     while(1){
-        hal_OLED_clear();
+        hal_OLED_clear();   //Clear display so that when display_task is suspended, no pixels are left on
         vTaskSuspend(NULL); //Suspend current task
     }
 }
@@ -198,14 +189,15 @@ void display_task(void* arg)
 {
     char flow1_string[15], flow2_string[15], hum1_string[15], hum2_string[15];
     bool isButtonPushed;
+    
     while(1){
         if(xQueueReceiveFromISR(gpio_evt_queue, &isButtonPushed, NULL) == pdTRUE)
         {
             //--Debouncing for button press--
             vTaskDelay(50/portTICK_PERIOD_MS);    //50ms of debounce time
-            if((isButtonPushed == true) && (gpio_get_level(BTN_0)))
+            if((isButtonPushed == true) && (usr_gpio_read(BUTTON)))
             {
-                printf("***Entro, Var = 1***\n");
+                ESP_LOGI("BUTTON", "Button interrupt generated");
                 timer_start(TMR_GROUP_0, TMR_NUM_0);
                 timer_set_counter_value(TMR_GROUP_0, TMR_NUM_0, 0);
                 timer_overflow = 0;
@@ -231,20 +223,27 @@ void display_task(void* arg)
 
 void app_main(void)
 {
-    //Initializing
-    printf("Inicializando...\n");
+    //Initialization
     hal_OLED_init();
+    //Print image on display while waiting for initialization to be done
     hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
 
-    gpio_init();
+    usr_gpio_init();
     usr_timer_init();
+    hal_flowsensor_init();
+    hal_humidity_sensor_init();
     mqtt_init();
     mqtt_app_start();
 
     hal_OLED_clear();
 
-    //create a queue to handle gpio event from isr
+    //Create a queue to handle gpio event from isr
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
+
+    //ISR initialization for timer and gpio
+    timer_isr_register(TMR_GROUP_0, TMR_NUM_0, &timer_isr_handler, NULL, ESP_INTR_FLAG_IRAM, NULL);
+    gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
+    gpio_isr_handler_add(BUTTON, gpio_isr_handler, (void*) BUTTON);
 
     //Create Display Task which updates data on screen, and then suspends immediately
     xTaskCreate(display_task, "display_task", 8142, NULL, 10, &display_task_handle);
@@ -252,17 +251,11 @@ void app_main(void)
 
     //Create rest of tasks
     xTaskCreate(display_off_task, "display_off_task", 2048, NULL, 10, &display_off_task_handle);
-    xTaskCreate(flow_task, "flow_task", 2048, NULL, 5, &flow_handle);
-    xTaskCreate(humidity_task, "humidity_task", 2048, NULL, 5, &humidity_handle);
-    xTaskCreate(valve_row1_task, "valve_row1_task", 2048, NULL, 5, &valve_row1_handle);
-    xTaskCreate(valve_row2_task, "valve_row2_task", 2048, NULL, 5, &valve_row2_handle);
-    xTaskCreatePinnedToCore(nodered_task, "nodered_task", 4096, NULL, 5, &nodered_handle, 1);
-
-    timer_isr_register(0, 0, &timer_isr_handler, NULL, ESP_INTR_FLAG_IRAM, NULL);
-
-    //ISR install for button
-    gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
-    gpio_isr_handler_add(BTN_0, gpio_isr_handler, (void*) BTN_0);
-                                                                                               
+    xTaskCreate(flow_task, "flow_task", 2048, NULL, 5, &flow_task_handle);
+    xTaskCreate(humidity_task, "humidity_task", 2048, NULL, 5, &humidity_task_handle);
+    xTaskCreate(valve_row1_task, "valve_row1_task", 2048, NULL, 5, &valve_row1_task_handle);
+    xTaskCreate(valve_row2_task, "valve_row2_task", 2048, NULL, 5, &valve_row2_task_handle);
+    xTaskCreatePinnedToCore(nodered_task, "nodered_task", 4096, NULL, 5, &nodered_task_handle, 1);
+                                                                              
 }
 
