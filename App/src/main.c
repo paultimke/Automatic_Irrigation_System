@@ -49,8 +49,8 @@ void humidity_task(void* arg)
         water_percent_s2 = hal_humidity_get_vwc(EC5_NUM_2);
         water_percent_s3 = hal_humidity_get_vwc(EC5_NUM_3);
         water_percent_s4 = hal_humidity_get_vwc(EC5_NUM_4);
-        row1_humidity = (water_percent_s1 + water_percent_s2)/2;
-        row2_humidity = (water_percent_s3 + water_percent_s4)/2;
+        row1_humidity = (water_percent_s1 + water_percent_s3)/2;
+        row2_humidity = (water_percent_s2 + water_percent_s4)/2;
         printf("Row 1 Humidity: %f\n", row1_humidity);
         printf("Row 2 Humidity: %f\n", row2_humidity);
 

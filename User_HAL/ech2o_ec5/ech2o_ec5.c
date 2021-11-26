@@ -62,7 +62,8 @@ float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num)
         break;
     }
 
-    vwc = (0.00000001)*powf(adc_kalman, 3) - 0.00008*powf(adc_kalman, 2) + 0.2321*adc_kalman - 210.7;   //Calcular VWC
+    //vwc = (0.00000001)*powf(adc_kalman, 3) - 0.00008*powf(adc_kalman, 2) + 0.2321*adc_kalman - 210.7;   //Calcular VWC
+    vwc =(0.00000002001)*powf(adc_kalman, 3) - (0.0001685)*powf(adc_kalman, 2) + (0.462)*adc_kalman - 387.01;
     #ifdef ADC_PRINT_TRUE
         printf("adc Result: %.2f RAW\n", adc_result);
         printf("adc Kalman: %.2f mv\n", adc_kalman);
