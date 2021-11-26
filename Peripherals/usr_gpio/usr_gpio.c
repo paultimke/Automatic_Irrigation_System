@@ -1,6 +1,6 @@
 #include "usr_gpio.h"
 
-void gpio_init(void){
+void usr_gpio_init(void){
 
     gpio_config_t io_conf = {};
     io_conf.intr_type = GPIO_INTR_POSEDGE;
@@ -28,14 +28,21 @@ void gpio_init(void){
     return;
 }  
 
-void gpio_high(int gpio_pin)
+void usr_gpio_high(int gpio_pin)
 {
     gpio_set_level(gpio_pin, 1);
     return;
 }
 
-void gpio_low(int gpio_pin)
+void usr_gpio_low(int gpio_pin)
 {
     gpio_set_level(gpio_pin, 0);
     return;
+}
+
+int usr_gpio_read(int gpio_pin)
+{
+    int gpio_level;
+    gpio_level = gpio_get_level(gpio_pin);
+    return gpio_level;
 }

@@ -17,12 +17,13 @@
 #define GPIO_EVALVE_1               16
 #define GPIO_EVALVE_2               17
 
-#define BTN_0                       GPIO_NUM_15
-#define GPIO_OUTPUT_PIN_SEL         (1ULL<<BTN_0)
+#define BUTTON                       GPIO_NUM_15
+#define GPIO_OUTPUT_PIN_SEL         (1ULL<<BUTTON)
 
 /*-----------------Prototypes----------------*/
-void gpio_init(void);
-void gpio_high(int gpio_pin);
-void gpio_low(int gpio_pin);
+void usr_gpio_init(void);
+void usr_gpio_high(int gpio_pin);
+void usr_gpio_low(int gpio_pin);
+int usr_gpio_read(int gpio_pin);
 
 #endif //_USR_GPIO_H_

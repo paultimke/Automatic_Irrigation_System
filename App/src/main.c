@@ -98,7 +98,8 @@ void valve_row2_task(void* arg)
             desired_hum_row2 = DEFAULT_HUM_LIMIT;
         }
 
-        if (row2_humidity < 40){
+
+        if (row2_humidity < desired_hum_row2){
             hal_evalve_on(EVALVE_UNIT_1);
             sprintf(str_is_valve2_on, "%f", 1.0);
 

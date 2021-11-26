@@ -2,6 +2,7 @@
   "C_Cpp.intelliSenseEngine": "Tag Parser",
   "files.associations": {
     "usr_mqtt.h": "c",
-    "complex": "c"
+    "complex": "c",
+    "main.h": "c"
   }
 }

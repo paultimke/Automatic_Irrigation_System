@@ -4,6 +4,7 @@
 /*------------------Includes-------------------*/
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "esp_netif.h"
 #include "esp_wifi.h"
 #include "esp_system.h"
@@ -32,5 +33,7 @@ void mqtt_init(void);
 /*-----------------Global variables-----------------*/
 extern esp_mqtt_client_handle_t client;
 extern uint8_t valve_state;
+extern uint8_t global_hum_row1, global_hum_row2;
+
 
 #endif //USR_MQTT.H

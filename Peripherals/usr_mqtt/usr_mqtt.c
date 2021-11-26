@@ -3,6 +3,7 @@
 static const char *TAG = "MQTT_CLIENT";
 esp_mqtt_client_handle_t client;
 uint8_t valve_state;
+uint8_t global_hum_row1, global_hum_row2;
 
 void mqtt_app_start(void)
 {
@@ -42,7 +43,7 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
     int msg_id;
     static char strTopic[20];
     static char strData[10];
-    
+
     // your_context_t *context = event->context;
     switch (event->event_id) {
         case MQTT_EVENT_CONNECTED:
@@ -53,6 +54,14 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
             msg_id = esp_mqtt_client_subscribe(client, "/riego2/valvula2", 0);
             ESP_LOGI(TAG, "sent subscribe successful to /riego2/valvula2, msg_id=%d", msg_id);
+
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/riego2/desired_hum1", 0);
+            ESP_LOGI(TAG, "sent subscribe successful to /riego2/desired_hum1, msg_id=%d", msg_id);
+
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/riego2/desired_hum2", 0);
+            ESP_LOGI(TAG, "sent subscribe successful to /riego2/desired_hum2, msg_id=%d", msg_id);
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -90,6 +99,12 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
                 valve_state = ROW2_VALVE_OFF;
             }
             }
+            if(strcmp(strTopic, "/riego2/desired_hum1") == 0){
+                global_hum_row1 = (uint8_t) atoi(strData);
+            }
+            if(strcmp(strTopic, "/riego2/desired_hum2") == 0){
+                global_hum_row2 = (uint8_t) atoi(strData);
+            }
 
             break;
         case MQTT_EVENT_ERROR:
@@ -98,7 +113,6 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
         default:
             ESP_LOGI(TAG, "Other event id:%d", event->event_id);
             break;
-
     }
     return ESP_OK;
 }

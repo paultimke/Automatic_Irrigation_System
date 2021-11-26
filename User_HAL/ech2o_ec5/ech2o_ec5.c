@@ -23,7 +23,7 @@ float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num)
     case EC5_NUM_1:
         adc_channel = ADC1_CHANNEL_0;
         sensor_gpio = SENSOR_EC5_PWR_1;
-        gpio_high(sensor_gpio);                         //Inicia pulso de poder
+        usr_gpio_high(sensor_gpio);                         //Inicia pulso de poder
         vTaskDelay(200/portTICK_PERIOD_MS);             //Prende por 200 ms
         adc_result = (float) usr_adc_getResult(adc_channel);
         adc_kalman = kalman_Sensor_1(adc_result);       //Filtro de Kalman
@@ -31,7 +31,7 @@ float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num)
     case EC5_NUM_2:
         adc_channel = ADC1_CHANNEL_3;
         sensor_gpio = SENSOR_EC5_PWR_2; 
-        gpio_high(sensor_gpio);                         //Inicia pulso de poder
+        usr_gpio_high(sensor_gpio);                         //Inicia pulso de poder
         vTaskDelay(200/portTICK_PERIOD_MS);             //Prende por 200 ms
         adc_result = (float) usr_adc_getResult(adc_channel);
         adc_kalman = kalman_Sensor_2(adc_result);       //Filtro de Kalman
@@ -39,7 +39,7 @@ float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num)
     case EC5_NUM_3:
         adc_channel = ADC1_CHANNEL_6;
         sensor_gpio = SENSOR_EC5_PWR_3;
-        gpio_high(sensor_gpio);                         //Inicia pulso de poder
+        usr_gpio_high(sensor_gpio);                         //Inicia pulso de poder
         vTaskDelay(200/portTICK_PERIOD_MS);             //Prende por 200 ms
         adc_result = (float) usr_adc_getResult(adc_channel);
         adc_kalman = kalman_Sensor_3(adc_result);       //Filtro de Kalman
@@ -47,7 +47,7 @@ float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num)
     case EC5_NUM_4:
         adc_channel = ADC1_CHANNEL_7;
         sensor_gpio = SENSOR_EC5_PWR_4; 
-        gpio_high(sensor_gpio);                         //Inicia pulso de poder
+        usr_gpio_high(sensor_gpio);                         //Inicia pulso de poder
         vTaskDelay(200/portTICK_PERIOD_MS);             //Prende por 200 ms
         adc_result = (float) usr_adc_getResult(adc_channel);
         adc_kalman = kalman_Sensor_4(adc_result);       //Filtro de Kalman
@@ -69,7 +69,7 @@ float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num)
     #endif //ADC_PRINT_TRUE
 
     vTaskDelay(50/portTICK_PERIOD_MS);              //50 ms despues de lectura
-    gpio_low(sensor_gpio);                          //Apagar poder
+    usr_gpio_low(sensor_gpio);                          //Apagar poder
 
     return vwc;
 }
