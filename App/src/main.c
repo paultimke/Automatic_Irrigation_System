@@ -61,7 +61,7 @@ void humidity_task(void* arg)
     }
 }
 
-void valve_row1_task(void* arg)
+void auto_valve_row1_task(void* arg)
 {
     uint8_t desired_hum_row1;
 
@@ -72,7 +72,6 @@ void valve_row1_task(void* arg)
         if(global_hum_row1 == 0){
             desired_hum_row1 = DEFAULT_HUM_LIMIT;
         }
-        printf("\n\n\nDESIRED: %d\n", desired_hum_row1);
 
         if (row1_humidity < desired_hum_row1){
             hal_evalve_on(EVALVE_UNIT_0);
@@ -87,7 +86,7 @@ void valve_row1_task(void* arg)
     }
 }
 
-void valve_row2_task(void* arg)
+void auto_valve_row2_task(void* arg)
 {
     uint8_t desired_hum_row2;
 
@@ -98,7 +97,6 @@ void valve_row2_task(void* arg)
         if(global_hum_row2 == 0){
             desired_hum_row2 = DEFAULT_HUM_LIMIT;
         }
-        printf("\n\n\nDESIRED: %d\n", desired_hum_row2);
 
         if (row2_humidity < desired_hum_row2){
             hal_evalve_on(EVALVE_UNIT_1);
@@ -117,7 +115,6 @@ void valve_row2_task(void* arg)
 void nodered_task(void* arg)
 {
 	char str_humidity_1[10], str_humidity_2[10];
-    //char desired_hum_1[10], desired_hum_2[10];
     char str_flow_1[10], str_flow_2[10];
     bool isRow1_active = false, isRow2_active = false;
 
@@ -138,25 +135,25 @@ void nodered_task(void* arg)
         printf("Valve state: %d\n", valve_state);
 
         if((valve_state == ROW1_VALVE_OFF) && (isRow1_active == true)){
-            vTaskResume(valve_row1_task_handle);
+            vTaskResume(auto_valve_row1_task_handle);
             hal_evalve_off(EVALVE_UNIT_0);
             sprintf(str_is_valve1_on, "%f", 0.0);
             isRow1_active = false;
         }
         else if((valve_state == ROW1_VALVE_ON) && (isRow1_active == false)){
-            vTaskSuspend(valve_row1_task_handle);
+            vTaskSuspend(auto_valve_row1_task_handle);
             hal_evalve_on(EVALVE_UNIT_0);
             sprintf(str_is_valve1_on, "%f", 1.0);
             isRow1_active = true;
         }
         else if((valve_state == ROW2_VALVE_ON) && (isRow2_active == false)){
-            vTaskSuspend(valve_row2_task_handle);
+            vTaskSuspend(auto_valve_row2_task_handle);
             hal_evalve_on(EVALVE_UNIT_1);
             sprintf(str_is_valve2_on, "%f", 1.0);
             isRow2_active = true;
         }
         else if((valve_state == ROW2_VALVE_OFF) && (isRow2_active == true)){
-            vTaskResume(valve_row2_task_handle);
+            vTaskResume(auto_valve_row2_task_handle);
             hal_evalve_off(EVALVE_UNIT_1);
             sprintf(str_is_valve2_on, "%f", 0.0);
             isRow2_active = false;
@@ -165,9 +162,9 @@ void nodered_task(void* arg)
         /** Safety measure to prevent valves being left on indefinetely, in case it
          * is forgotten to turn them off, to avoid flooding.
          */
-        if((row1_humidity >70) || (row2_humidity >70)){
-            vTaskResume(valve_row1_task_handle);
-            vTaskResume(valve_row2_task_handle);
+        if((row1_humidity > MAX_HUM_SAFETY) || (row2_humidity > MAX_HUM_SAFETY)){
+            vTaskResume(auto_valve_row1_task_handle);
+            vTaskResume(auto_valve_row2_task_handle);
             isRow1_active = false;
             isRow2_active = false;
         }
@@ -182,6 +179,7 @@ void nodered_task(void* arg)
 void display_off_task(void* arg)
 {
     while(1){
+        timer_pause(TMR_GROUP_0, TMR_NUM_0);
         hal_OLED_clear();   //Clear display so that when display_task is suspended, no pixels are left on
         vTaskSuspend(NULL); //Suspend current task
     }
@@ -208,19 +206,50 @@ void display_task(void* arg)
             else {isButtonPushed = false;}
         }
 
-        sprintf(flow1_string, "Flujo F1: %.1f", flow_rate_s1);
-        sprintf(flow2_string, "Flujo F2: %.1f", flow_rate_s2);
-        sprintf(hum1_string, "Hum F1: %.1f", row1_humidity);
-        sprintf(hum2_string, "Hum F2: %.1f", row2_humidity);
+        sprintf(flow1_string, "F1: %.2f L/min", flow_rate_s1);
+        sprintf(flow2_string, "F2: %.2f L/min", flow_rate_s2);
+        sprintf(hum1_string, "F1: %.2f %%", row1_humidity);
+        sprintf(hum2_string, "F2: %.2f %%", row2_humidity);
 
-        hal_OLED_print(flow1_string, 1, 2);
-        hal_OLED_print(flow2_string, 3, 2);
-        hal_OLED_print(hum1_string, 5, 2);
-        hal_OLED_print(hum2_string, 7, 2);
-    
+        bool disp_cleared = false;
+
+        if(timer_overflow < 10){
+            hal_OLED_print("Humedad", 1, OLED_TEXT_CENTER(strlen("Humedad")));
+            hal_OLED_print(hum1_string, 3, 1);
+            hal_OLED_print(hum2_string, 5, 1);
+        }
+        else if((timer_overflow > 10) && (timer_overflow <20)){
+            if(!disp_cleared){
+                hal_OLED_clear();
+            }
+            disp_cleared = true;
+            hal_OLED_print("Flujo", 1, OLED_TEXT_CENTER(strlen("Flujo")));
+            hal_OLED_print(flow1_string, 3, 1);
+            hal_OLED_print(flow2_string, 5, 1);
+        }
+        else if(timer_overflow == 20){
+            hal_OLED_clear();
+        }
+        else{
+            hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
+        }
+        
+
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
 }
+
+/*oid timed_water_task(void* arg)
+{
+    uint8_t row1_water_seconds;
+    row1_water_seconds = row1_water_minutes * 60;
+
+    vTaskSuspend
+
+    timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_1, (uint64_t) row1_water_seconds);
+
+
+}*/
 
 
 void app_main(void)
@@ -255,9 +284,10 @@ void app_main(void)
     xTaskCreate(display_off_task, "display_off_task", 2048, NULL, 10, &display_off_task_handle);
     xTaskCreate(flow_task, "flow_task", 2048, NULL, 5, &flow_task_handle);
     xTaskCreate(humidity_task, "humidity_task", 2048, NULL, 5, &humidity_task_handle);
-    xTaskCreate(valve_row1_task, "valve_row1_task", 2048, NULL, 5, &valve_row1_task_handle);
-    xTaskCreate(valve_row2_task, "valve_row2_task", 2048, NULL, 5, &valve_row2_task_handle);
+    xTaskCreate(auto_valve_row1_task, "auto_valve_row1_task", 2048, NULL, 5, &auto_valve_row1_task_handle);
+    xTaskCreate(auto_valve_row2_task, "auto_valve_row2_task", 2048, NULL, 5, &auto_valve_row2_task_handle);
     xTaskCreatePinnedToCore(nodered_task, "nodered_task", 4096, NULL, 5, &nodered_task_handle, 1);
+    //xTaskCreate(timed_water_task, "timed_water_task", 2048, NULL, 5, &timed_water_task_handle);
                                                                               
 }
 

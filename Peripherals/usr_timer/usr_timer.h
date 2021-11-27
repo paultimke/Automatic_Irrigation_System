@@ -10,9 +10,13 @@
 
 #define TMR_GROUP_0             (0)
 #define TMR_NUM_0               (0)
+#define TMR_NUM_1               (1)
 
 /*--------------Prototypes----------------*/
 void usr_timer_print_counter(uint64_t counter_value);
 void usr_timer_init(void);
+
+/*----------------Variables-------------*/
+extern uint8_t row1_water_minutes;
 
 #endif //USR_TIMER_H
