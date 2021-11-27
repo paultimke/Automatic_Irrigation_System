@@ -162,22 +162,8 @@ void hal_OLED_disp_image(uint8_t *image, uint8_t width, uint8_t height, uint8_t 
 
     /*Check for display boundaries before displaying*/
     page_max = page_start + (height-1) / OLED_DISPLAY_BITS;
-	/*if(height % OLED_DISPLAY_BITS > 0)
-	{
-		page_max++;
-	}
-	if(page_max >(OLED_MAX_PAGE-1))
-	{
-		page_max = OLED_MAX_PAGE-1;
-	}
-    */
 	column_max = column_start + width -1;
-	/*if(column_max >= OLED_WIDTH)
-	{
-		column_max = OLED_WIDTH -1;
-	}*/
-
-    //hal_OLED_send_cmd(OLED_CMD_DISPLAY_OFF);
+    
     hal_OLED_send_cmd(OLED_CMD_SET_DISPLAY_START_LINE(0));
 
     for(page = page_start; page < page_max; page++)

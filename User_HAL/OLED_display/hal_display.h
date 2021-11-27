@@ -65,8 +65,10 @@
 #define OLED_VCOHM_DESELCT_LVL                  (0x40)
 
 // Charge Pump 
-#define OLED_CMD_SET_CHARGE_PUMP                (0x8D)    // follow with 0x14
+#define OLED_CMD_SET_CHARGE_PUMP                (0x8D)    // follow with 0x14   
 #define OLED_CHARGE_PUMP                        (0x14)    // Charge Pump (0x10 External, 0x14 Internal DC/DC)
+
+#define OLED_TEXT_CENTER(text_len)              ((OLED_WIDTH-(text_len * FONT_SMALL_WIDTH))/2)
 
 /*-----------Variables and Types------------*/
 typedef enum{
