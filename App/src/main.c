@@ -34,7 +34,7 @@ void flow_task(void* arg)
         printf("Flow rate 1: %5.2f L/min\n",flow_rate_s1);
         printf("Flow rate 2: %5.2f L/min\n",flow_rate_s2);
 
-        vTaskDelay(1000/portTICK_PERIOD_MS);
+        vTaskDelay(5000/portTICK_PERIOD_MS);
     }
 }
 
@@ -56,7 +56,7 @@ void humidity_task(void* arg)
 
         printf("Number of timer overflows = %d\n", timer_overflow);
 
-        vTaskDelay(2000/portTICK_PERIOD_MS);
+        vTaskDelay(20000/portTICK_PERIOD_MS);
         
     }
 }
@@ -66,7 +66,7 @@ void auto_valve_row1_task(void* arg)
     uint8_t desired_hum_row1;
 
     while(1){
-        printf("********TASK ACTIVA VALVE 1********\n\n");
+        //printf("********TASK ACTIVA VALVE 1********\n\n");
 
         desired_hum_row1 = global_hum_row1;
         if(global_hum_row1 == 0){
@@ -91,7 +91,7 @@ void auto_valve_row2_task(void* arg)
     uint8_t desired_hum_row2;
 
     while(1){
-        printf("********TASK ACTIVA VALVE 2********\n\n");
+        //printf("********TASK ACTIVA VALVE 2********\n\n");
 
         desired_hum_row2 = global_hum_row2;
         if(global_hum_row2 == 0){
@@ -181,6 +181,7 @@ void display_off_task(void* arg)
     while(1){
         timer_pause(TMR_GROUP_0, TMR_NUM_0);
         hal_OLED_clear();   //Clear display so that when display_task is suspended, no pixels are left on
+        timer_overflow = 0;
         vTaskSuspend(NULL); //Suspend current task
     }
 }
@@ -189,7 +190,8 @@ void display_task(void* arg)
 {
     char flow1_string[15], flow2_string[15], hum1_string[15], hum2_string[15];
     bool isButtonPushed;
-    
+    bool disp_cleared = false;
+
     while(1){
         if(xQueueReceiveFromISR(gpio_evt_queue, &isButtonPushed, NULL) == pdTRUE)
         {
@@ -211,16 +213,15 @@ void display_task(void* arg)
         sprintf(hum1_string, "F1: %.2f %%", row1_humidity);
         sprintf(hum2_string, "F2: %.2f %%", row2_humidity);
 
-        bool disp_cleared = false;
-
         if(timer_overflow < 10){
             hal_OLED_print("Humedad", 1, OLED_TEXT_CENTER(strlen("Humedad")));
             hal_OLED_print(hum1_string, 3, 1);
             hal_OLED_print(hum2_string, 5, 1);
         }
-        else if((timer_overflow > 10) && (timer_overflow <20)){
-            if(!disp_cleared){
+        else if((timer_overflow >= 10) && (timer_overflow <20)){
+            if(disp_cleared == false){
                 hal_OLED_clear();
+                vTaskDelay(25/portTICK_PERIOD_MS);
             }
             disp_cleared = true;
             hal_OLED_print("Flujo", 1, OLED_TEXT_CENTER(strlen("Flujo")));
@@ -232,6 +233,7 @@ void display_task(void* arg)
         }
         else{
             hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
+            disp_cleared = false;
         }
         
 
@@ -263,8 +265,8 @@ void app_main(void)
     usr_timer_init();
     hal_flowsensor_init();
     hal_humidity_sensor_init();
-    mqtt_init();
-    mqtt_app_start();
+    //mqtt_init();
+    //mqtt_app_start();
 
     hal_OLED_clear();
 
@@ -286,7 +288,7 @@ void app_main(void)
     xTaskCreate(humidity_task, "humidity_task", 2048, NULL, 5, &humidity_task_handle);
     xTaskCreate(auto_valve_row1_task, "auto_valve_row1_task", 2048, NULL, 5, &auto_valve_row1_task_handle);
     xTaskCreate(auto_valve_row2_task, "auto_valve_row2_task", 2048, NULL, 5, &auto_valve_row2_task_handle);
-    xTaskCreatePinnedToCore(nodered_task, "nodered_task", 4096, NULL, 5, &nodered_task_handle, 1);
+    //xTaskCreatePinnedToCore(nodered_task, "nodered_task", 4096, NULL, 5, &nodered_task_handle, 1);
     //xTaskCreate(timed_water_task, "timed_water_task", 2048, NULL, 5, &timed_water_task_handle);
                                                                               
 }
