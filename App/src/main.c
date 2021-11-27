@@ -259,7 +259,9 @@ void app_main(void)
     //Initialization
     hal_OLED_init();
     //Print image on display while waiting for initialization to be done
-    hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
+    //hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
+    hal_OLED_disp_image(yodita_glcd_bmp,YODITA_GLCD_WIDTH,YODITA_GLCD_HEIGHT,2,40);
+    vTaskDelay(10000/portTICK_PERIOD_MS);
 
     usr_gpio_init();
     usr_timer_init();
@@ -292,4 +294,6 @@ void app_main(void)
     //xTaskCreate(timed_water_task, "timed_water_task", 2048, NULL, 5, &timed_water_task_handle);
                                                                               
 }
+
+
 
