@@ -19,8 +19,9 @@ void usr_timer_init(void)
     /***Config for Timer NUM 0 of Group 0***/
     timer_init(TMR_GROUP_0, TMR_NUM_0, &config);
     timer_set_counter_value(TMR_GROUP_0, TMR_NUM_0, 0);
-    //Time base is (apb_clock)/(TIMER_DIVIDER) = 40Mhz/64000 = 625
-    timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_0, 625*2*(1));  //Sets overflow value to 1 second (time base is 625)
+
+    //Timer sclae is defined in usr_timer.h and it is (apb_clock)/(TIMER_DIVIDER) = 80Mhz/64000 = 1250 hz 
+    timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_0, TIMER_SCALE*(1));  //Sets overflow value to 1 second
     timer_enable_intr(TMR_GROUP_0, TMR_NUM_0);
 
     /***Config for Timer NUM 1 of Group 0***/

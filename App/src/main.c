@@ -38,9 +38,11 @@ void IRAM_ATTR timer0_isr_hanlder(void* arg)
 
 void IRAM_ATTR timer1_isr_hanlder(void* arg)
 {
-    /*This interrupt will trigger on each Timer 1 (Group 0) overflow */
+    /** This interrupt will trigger on each Timer 1 (Group 0) overflow,
+     * which occurs on each alarm. Alarm value is set on timed_water_task, which
+     * is triggered after an MQTT event regarding a change in Nodered UI.
+     */
 
-    //Timer overflows after alarm value specified by the user
     TIMERG0.int_clr_timers.t1 = 1; // Clear interrupt bit
 
     timer_pause(TMR_GROUP_0, TMR_NUM_1);
@@ -288,7 +290,7 @@ void timed_water_task(void* arg)
         /**Timer 1 will overflow after the seconds specified by the user have passed.
          * Then, manual mode will be suspended, timer will be reset and paused and 
          * automatic irrigation will continue*/
-        timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_1, (uint64_t) (625*2*irrigation_seconds));
+        timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_1, (uint64_t) (TIMER_SCALE*irrigation_seconds));
         
         /*Start timer to count how long irrigation will occur*/
         timer_start(TMR_GROUP_0, TMR_NUM_1);
