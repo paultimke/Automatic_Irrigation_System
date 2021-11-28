@@ -2,9 +2,10 @@
 #define USR_MQTT_H
 
 /*------------------Includes-------------------*/
+#include "main.h"
+
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include "esp_netif.h"
 #include "esp_wifi.h"
 #include "esp_system.h"
@@ -12,7 +13,6 @@
 #include "esp_event.h"
 #include "protocol_examples_common.h"
 #include "mqtt_client.h"
-#include "esp_log.h"
 #include "lwip/sockets.h"
 #include "lwip/dns.h"
 #include "lwip/netdb.h"

@@ -1,15 +1,8 @@
 #include "usr_timer.h"
 
-/*
- * A simple helper function to print the raw timer counter value
- * and the counter value converted to seconds
- */
-void usr_timer_print_counter(uint64_t counter_value)
-{
-    printf("Counter: 0x%08x%08x\r\n", (uint32_t) (counter_value >> 32),
-           (uint32_t) (counter_value));
-    printf("Time   : %.8f s\r\n", (double) counter_value / TIMER_SCALE);
-}
+volatile uint8_t timer0_overflow = 0;
+volatile uint8_t irrigation_minutes;
+
 
 void usr_timer_init(void)
 {
@@ -32,7 +25,8 @@ void usr_timer_init(void)
 
     /***Config for Timer NUM 1 of Group 0***/
     timer_init(TMR_GROUP_0, TMR_NUM_1, &config);
-    timer_disable_intr(TMR_GROUP_0, TMR_NUM_1);
+    timer_set_counter_value(TMR_GROUP_0, TMR_NUM_1, 0);
+    timer_enable_intr(TMR_GROUP_0, TMR_NUM_1);
     
     return;
 }

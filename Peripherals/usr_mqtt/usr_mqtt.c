@@ -86,26 +86,31 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             sprintf(strTopic,"%.*s", event->topic_len, event->topic);
             sprintf(strData,"%.*s", event->data_len, event->data);
 
+            //Valve Activation 1
             if((strcmp(strTopic, "/riego2/valvula1") == 0) && (strcmp(strData, "ON") == 0)){
                 valve_state = ROW1_VALVE_ON;     
             }
-            else {
-                valve_state = ROW1_VALVE_OFF;
-            }
-        
+            else {valve_state = ROW1_VALVE_OFF;}
+
             if((strcmp(strTopic, "/riego2/valvula2") == 0) && (strcmp(strData, "ON") == 0)){
                 valve_state = ROW2_VALVE_ON;
             }
-            else {
-                valve_state = ROW2_VALVE_OFF;
-            }
+            else {valve_state = ROW2_VALVE_OFF;}
 
+            //Humidity level set
             if(strcmp(strTopic, "/riego2/desired_hum1") == 0){
                 global_hum_row1 = (uint8_t) atoi(strData);
             }
             if(strcmp(strTopic, "/riego2/desired_hum2") == 0){
                 global_hum_row2 = (uint8_t) atoi(strData);
             }
+
+            //Irrigation time set
+            if(strcmp(strTopic, "/riego2/tiempo_manual") == 0){
+                irrigation_minutes = (uint8_t) atoi(strData);
+                vTaskResume(timed_water_task_handle);
+            }
+
 
             break;
         case MQTT_EVENT_ERROR:

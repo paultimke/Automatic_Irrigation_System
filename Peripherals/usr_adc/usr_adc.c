@@ -13,7 +13,6 @@ void usr_adc_init(void)
     
     //Calibration
     adc_characteristics = (esp_adc_cal_characteristics_t*) calloc(1, sizeof(esp_adc_cal_characteristics_t));
-    //adc_characteristics gets initialized
     esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_12, 
                               ADC_VREF, adc_characteristics);  
 

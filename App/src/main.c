@@ -3,6 +3,16 @@
 //Queues
 static xQueueHandle gpio_evt_queue = NULL;
 
+TaskHandle_t flow_monitor_task_handle = NULL;
+TaskHandle_t humidity_monitor_task_handle = NULL;
+TaskHandle_t auto_valve_row1_task_handle = NULL;
+TaskHandle_t auto_valve_row2_task_handle = NULL;
+TaskHandle_t nodered_task_handle = NULL;
+TaskHandle_t display_task_handle = NULL;
+TaskHandle_t display_off_task_handle = NULL;
+TaskHandle_t timed_water_task_handle = NULL;
+
+
 static void IRAM_ATTR gpio_isr_handler(void* arg)
 {
     bool isButtonPushed = true;
@@ -10,12 +20,12 @@ static void IRAM_ATTR gpio_isr_handler(void* arg)
     xQueueSendFromISR(gpio_evt_queue, &isButtonPushed, NULL);
 }
 
-void IRAM_ATTR timer_isr_handler(void* arg)
+void IRAM_ATTR timer0_isr_hanlder(void* arg)
 {
     //Timer overflows each second
-    timer_overflow++;
+    timer0_overflow++;
     TIMERG0.int_clr_timers.t0 = 1; // Clear interrupt bit
-    if(timer_overflow > 25){
+    if(timer0_overflow > 25){
 
         /** Resume a task specifically to clear display before suspending the
          * display task, to ensure that when it is suspended, there are no pixels left on.
@@ -26,7 +36,27 @@ void IRAM_ATTR timer_isr_handler(void* arg)
     TIMERG0.hw_timer[0].config.alarm_en = TIMER_ALARM_EN;   //Re-enable alarm for next interrupt
 }
 
-void flow_task(void* arg)
+void IRAM_ATTR timer1_isr_hanlder(void* arg)
+{
+    /*This interrupt will trigger on each Timer 1 (Group 0) overflow */
+
+    //Timer overflows after alarm value specified by the user
+    TIMERG0.int_clr_timers.t1 = 1; // Clear interrupt bit
+
+    timer_pause(TMR_GROUP_0, TMR_NUM_1);
+    hal_evalve_off(EVALVE_UNIT_0);
+    hal_evalve_off(EVALVE_UNIT_1);
+
+    xTaskResumeFromISR(auto_valve_row1_task_handle);
+    xTaskResumeFromISR(auto_valve_row2_task_handle);
+
+    
+    TIMERG0.hw_timer[1].config.alarm_en = TIMER_ALARM_EN;   //Re-enable alarm for next interrupt
+}
+
+
+
+void flow_monitor_task(void* arg)
 {
     while(1){
         flow_rate_s1 = hal_flowsensor_read(FLOW_SENSOR_1);
@@ -38,7 +68,7 @@ void flow_task(void* arg)
     }
 }
 
-void humidity_task(void* arg)
+void humidity_monitor_task(void* arg)
 {
     float water_percent_s1, water_percent_s2, water_percent_s3, water_percent_s4;
 
@@ -54,8 +84,7 @@ void humidity_task(void* arg)
         printf("Row 1 Humidity: %f\n", row1_humidity);
         printf("Row 2 Humidity: %f\n", row2_humidity);
 
-        printf("Number of timer overflows = %d\n", timer_overflow);
-
+        printf("Number of timer overflows = %d\n", timer0_overflow);
         vTaskDelay(20000/portTICK_PERIOD_MS);
         
     }
@@ -63,6 +92,8 @@ void humidity_task(void* arg)
 
 void auto_valve_row1_task(void* arg)
 {
+    #define AUTO_IRRIGATION_STARTED 1
+
     uint8_t desired_hum_row1;
 
     while(1){
@@ -180,8 +211,8 @@ void display_off_task(void* arg)
 {
     while(1){
         timer_pause(TMR_GROUP_0, TMR_NUM_0);
+        timer0_overflow = 0;
         hal_OLED_clear();   //Clear display so that when display_task is suspended, no pixels are left on
-        timer_overflow = 0;
         vTaskSuspend(NULL); //Suspend current task
     }
 }
@@ -202,7 +233,7 @@ void display_task(void* arg)
                 ESP_LOGI("BUTTON", "Button interrupt generated");
                 timer_start(TMR_GROUP_0, TMR_NUM_0);
                 timer_set_counter_value(TMR_GROUP_0, TMR_NUM_0, 0);
-                timer_overflow = 0;
+                timer0_overflow = 0;
                 isButtonPushed = false;
             }
             else {isButtonPushed = false;}
@@ -213,12 +244,12 @@ void display_task(void* arg)
         sprintf(hum1_string, "F1: %.2f %%", row1_humidity);
         sprintf(hum2_string, "F2: %.2f %%", row2_humidity);
 
-        if(timer_overflow < 10){
+        if(timer0_overflow < 10){
             hal_OLED_print("Humedad", 1, OLED_TEXT_CENTER(strlen("Humedad")));
             hal_OLED_print(hum1_string, 3, 1);
             hal_OLED_print(hum2_string, 5, 1);
         }
-        else if((timer_overflow >= 10) && (timer_overflow <20)){
+        else if((timer0_overflow >= 10) && (timer0_overflow <20)){
             if(disp_cleared == false){
                 hal_OLED_clear();
                 vTaskDelay(25/portTICK_PERIOD_MS);
@@ -228,7 +259,7 @@ void display_task(void* arg)
             hal_OLED_print(flow1_string, 3, 1);
             hal_OLED_print(flow2_string, 5, 1);
         }
-        else if(timer_overflow == 20){
+        else if(timer0_overflow == 20){
             hal_OLED_clear();
         }
         else{
@@ -241,17 +272,33 @@ void display_task(void* arg)
     }
 }
 
-/*oid timed_water_task(void* arg)
+void timed_water_task(void* arg)
 {
-    uint8_t row1_water_seconds;
-    row1_water_seconds = row1_water_minutes * 60;
+    uint8_t irrigation_seconds;
 
-    vTaskSuspend
+    while(1){
+        irrigation_seconds = irrigation_minutes * 60;
 
-    timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_1, (uint64_t) row1_water_seconds);
+        /*As this is a manual mode, automatic irrigation is turned off to avoid conflicts*/
+        #ifdef AUTO_IRRIGATION_STARTED
+        vTaskSuspend(auto_valve_row1_task_handle);
+        vTaskSuspend(auto_valve_row2_task_handle);
+        #endif
 
+        /**Timer 1 will overflow after the seconds specified by the user have passed.
+         * Then, manual mode will be suspended, timer will be reset and paused and 
+         * automatic irrigation will continue*/
+        timer_set_alarm_value(TMR_GROUP_0, TMR_NUM_1, (uint64_t) (625*2*irrigation_seconds));
+        
+        /*Start timer to count how long irrigation will occur*/
+        timer_start(TMR_GROUP_0, TMR_NUM_1);
+        hal_evalve_on(EVALVE_UNIT_0);
+        hal_evalve_on(EVALVE_UNIT_1);
 
-}*/
+        //Suspends current task, which will be resumed on each Mqtt event regarding this task
+        vTaskSuspend(NULL);
+    }
+}
 
 
 void app_main(void)
@@ -276,7 +323,7 @@ void app_main(void)
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
     //ISR initialization for timer and gpio
-    timer_isr_register(TMR_GROUP_0, TMR_NUM_0, &timer_isr_handler, NULL, ESP_INTR_FLAG_IRAM, NULL);
+    timer_isr_register(TMR_GROUP_0, TMR_NUM_0, &timer0_isr_hanlder, NULL, ESP_INTR_FLAG_IRAM, NULL);
     gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
     gpio_isr_handler_add(BUTTON, gpio_isr_handler, (void*) BUTTON);
 
@@ -284,14 +331,17 @@ void app_main(void)
     xTaskCreate(display_task, "display_task", 8142, NULL, 10, &display_task_handle);
     vTaskSuspend(display_task_handle);
 
-    //Create rest of tasks
+    //Creater Task to manually input irrigation time
+    xTaskCreate(timed_water_task, "timed_water_task", 2048, NULL, 10, &timed_water_task_handle);
+
+    //Create the rest of the tasks
     xTaskCreate(display_off_task, "display_off_task", 2048, NULL, 10, &display_off_task_handle);
-    xTaskCreate(flow_task, "flow_task", 2048, NULL, 5, &flow_task_handle);
-    xTaskCreate(humidity_task, "humidity_task", 2048, NULL, 5, &humidity_task_handle);
+    xTaskCreate(flow_monitor_task, "flow_monitor_task", 2048, NULL, 5, &flow_monitor_task_handle);
+    xTaskCreate(humidity_monitor_task, "humidity_monitor_task", 2048, NULL, 5, &humidity_monitor_task_handle);
     xTaskCreate(auto_valve_row1_task, "auto_valve_row1_task", 2048, NULL, 5, &auto_valve_row1_task_handle);
     xTaskCreate(auto_valve_row2_task, "auto_valve_row2_task", 2048, NULL, 5, &auto_valve_row2_task_handle);
     //xTaskCreatePinnedToCore(nodered_task, "nodered_task", 4096, NULL, 5, &nodered_task_handle, 1);
-    //xTaskCreate(timed_water_task, "timed_water_task", 2048, NULL, 5, &timed_water_task_handle);
+    
                                                                               
 }
 
