@@ -3,6 +3,9 @@
   "files.associations": {
     "usr_mqtt.h": "c",
     "complex": "c",
-    "main.h": "c"
+    "main.h": "c",
+    "app_irrigation.h": "c",
+    "app_display.h": "c",
+    "usr_timer.h": "c"
   }
 }

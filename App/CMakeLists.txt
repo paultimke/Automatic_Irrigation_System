@@ -1,4 +1,4 @@
-set(SOURCES ./src/main.c)
+set(SOURCES ./src/main.c ./src/APP_irrigation.c ./src/APP_display.c ./src/APP_nodered.c ./src/APP_monitoring.c)
 
 idf_component_register(SRCS ${SOURCES}
                         INCLUDE_DIRS . inc

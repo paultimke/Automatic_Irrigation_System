@@ -1,7 +1,7 @@
 #include "usr_timer.h"
 
 volatile uint8_t timer0_overflow = 0;
-volatile uint8_t irrigation_minutes;
+volatile uint16_t irrigation_minutes;
 
 
 void usr_timer_init(void)
@@ -27,7 +27,7 @@ void usr_timer_init(void)
     /***Config for Timer NUM 1 of Group 0***/
     timer_init(TMR_GROUP_0, TMR_NUM_1, &config);
     timer_set_counter_value(TMR_GROUP_0, TMR_NUM_1, 0);
-    timer_enable_intr(TMR_GROUP_0, TMR_NUM_1);
+    timer_disable_intr(TMR_GROUP_0, TMR_NUM_1);
     
     return;
 }

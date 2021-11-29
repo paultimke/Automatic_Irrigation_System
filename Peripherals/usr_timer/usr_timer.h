@@ -19,6 +19,6 @@ void usr_timer_init(void);
 
 /*----------------Variables-------------*/
 extern volatile uint8_t timer0_overflow;
-extern volatile uint8_t irrigation_minutes;
+extern volatile uint16_t irrigation_minutes;
 
 #endif //USR_TIMER_H
