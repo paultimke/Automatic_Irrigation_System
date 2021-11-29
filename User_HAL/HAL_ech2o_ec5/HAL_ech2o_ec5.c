@@ -1,4 +1,4 @@
-#include "ech2o_ec5.h"
+#include "HAL_ech2o_ec5.h"
 
 #define ADC_PRINT_TRUE
 

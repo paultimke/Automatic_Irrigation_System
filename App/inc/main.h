@@ -17,10 +17,10 @@
 #include "usr_gpio.h"
 #include "usr_mqtt.h"
 #include "usr_timer.h"
-#include "flow_sensor.h"
-#include "ech2o_ec5.h"
-#include "solenoid_valve.h"
-#include "hal_display.h"
+#include "HAL_flow_sensor.h"
+#include "HAL_ech2o_ec5.h"
+#include "HAL_solenoid_valve.h"
+#include "HAL_display.h"
 
 /*---------------Macros------------------*/
 #define ESP_INTR_FLAG_DEFAULT 0

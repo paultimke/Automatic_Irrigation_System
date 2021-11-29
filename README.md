@@ -34,10 +34,10 @@ Below is short explanation of remaining files in the project folder.
 │   ├── usr_mqtt
 │   └── usr_pcnt
 ├── User_HAL
-│   ├── ech2o_ec5
-│   ├── flow_sensor
-│   ├── OLED_display
-│   └── solenoid_valve
+│   ├── HAL_ech2o_ec5
+│   ├── HAL_flow_sensor
+│   ├── HAL_OLED_display
+│   └── HAL_solenoid_valve
 └── README.md                  This is the file you are currently reading
 ```
 Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 

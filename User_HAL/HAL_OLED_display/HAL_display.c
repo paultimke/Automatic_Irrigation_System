@@ -1,4 +1,4 @@
-#include "hal_display.h"
+#include "HAL_display.h"
 
 uint8_t start_page_and_cols[3] = {
     OLED_CMD_SET_DISPLAY_START_LINE(0),
