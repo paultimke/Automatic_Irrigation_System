@@ -1,6 +1,6 @@
 #include "HAL_ech2o_ec5.h"
 
-#define ADC_PRINT_TRUE
+//#define ADC_PRINT_TRUE
 
 static float kalman_Sensor_1(float zk);
 static float kalman_Sensor_2(float zk);
@@ -70,7 +70,7 @@ float hal_humidity_get_vwc(hmdty_sensor_num_t sensor_num)
     #endif //ADC_PRINT_TRUE
 
     vTaskDelay(50/portTICK_PERIOD_MS);              //50 ms despues de lectura
-    usr_gpio_low(sensor_gpio);                          //Apagar poder
+    usr_gpio_low(sensor_gpio);                      //Apagar poder
 
     return vwc;
 }

@@ -4,6 +4,9 @@
 /*-------------------Includes----------------*/
 #include "main.h"
 
+/*------------------Macros-----------------*/
+#define AUTO_TAG    "AUTO_TAG"
+
 /*------------------Prototypes---------------*/
 void flow_monitor_task(void* arg);
 void humidity_monitor_task(void* arg);

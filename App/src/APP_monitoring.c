@@ -8,7 +8,7 @@ void flow_monitor_task(void* arg)
         printf("Flow rate 1: %5.2f L/min\n",flow_rate_s1);
         printf("Flow rate 2: %5.2f L/min\n",flow_rate_s2);
 
-        vTaskDelay(5000/portTICK_PERIOD_MS);
+        vTaskDelay(10000/portTICK_PERIOD_MS);
     }
 }
 
@@ -28,7 +28,6 @@ void humidity_monitor_task(void* arg)
         printf("Row 1 Humidity: %f\n", row1_humidity);
         printf("Row 2 Humidity: %f\n", row2_humidity);
 
-        printf("Number of timer overflows = %d\n", timer0_overflow);
         vTaskDelay(20000/portTICK_PERIOD_MS);
         
     }

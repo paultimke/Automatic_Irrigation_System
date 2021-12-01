@@ -43,12 +43,13 @@ uint32_t usr_adc_getResult(adc_channel_t channel)
     adc_reading = mode(adc_samples);
 
     //Convert raw result to voltage in mV
+    /*
     #ifdef ADC_CALIBRATION_ON
       uint32_t result = esp_adc_cal_raw_to_voltage(adc_reading, adc_characteristics);
     #else
       uint32_t result = adc_reading * ADC_VREF / ADC_MAX_VALUE;
     #endif
-    printf("\nVoltage: %d\n", result);
+    */
 
     return adc_reading;
 }

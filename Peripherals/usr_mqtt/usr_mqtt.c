@@ -78,7 +78,7 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_PUBLISHED:
-            ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+            //ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_DATA:
             ESP_LOGI(TAG, "MQTT_EVENT_DATA");
@@ -105,9 +105,11 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             //Humidity level set
             if(strcmp(strTopic, "/riego2/desired_hum1") == 0){
                 global_hum_row1 = (uint8_t) atoi(strData);
+                ESP_LOGI(TAG, "HUM 1 LIMIT UPDATE: %d", global_hum_row1);
             }
             if(strcmp(strTopic, "/riego2/desired_hum2") == 0){
                 global_hum_row2 = (uint8_t) atoi(strData);
+                ESP_LOGI(TAG, "HUM 1 LIMIT UPDATE: %d", global_hum_row2);
             }
 
             //Irrigation time set

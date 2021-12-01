@@ -21,7 +21,6 @@ float hal_flowsensor_read(flowsensor_unit_t fsensor_unit)
 
     //Get count from pulse counter
     count = usr_pcnt_read(pcnt_unit, PCNT_MEASUREMENT_PERIOD);
-    printf("Number of pulses: %d in %d seconds\n", count, PCNT_MEASUREMENT_PERIOD);
 
     //Calculate flow rate in L/min 
     flow_rate=(float)count/(PCNT_MEASUREMENT_PERIOD*K_FACTOR);
