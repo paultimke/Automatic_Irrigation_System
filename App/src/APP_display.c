@@ -24,14 +24,14 @@ void display_task(void* arg)
             else {isButtonPushed = false;}
         }
 
-        sprintf(flow1_string, "F1: %.2f L/min", flow_rate_s1);
-        sprintf(flow2_string, "F2: %.2f L/min", flow_rate_s2);
+        sprintf(flow1_string, "F2: %.2f L/min", flow_rate_s1);
+        sprintf(flow2_string, "F1: %.2f L/min", flow_rate_s2);
         sprintf(hum1_string, "F1: %.2f %%", row1_humidity);
         sprintf(hum2_string, "F2: %.2f %%", row2_humidity);
 
         timer_get_counter_time_sec(TMR_GROUP_0, TMR_NUM_0, &timer0_seconds);
 
-        if((timer0_seconds < 10)){
+        if((timer0_seconds < 10) && (timer0_seconds > 1)){
             flow_cleared = false;
             hal_OLED_print("Humedad", 1, OLED_TEXT_CENTER(strlen("Humedad")));
             hal_OLED_print(hum1_string, 3, 1);
@@ -44,8 +44,8 @@ void display_task(void* arg)
             }
             humidity_cleared = true;
             hal_OLED_print("Flujo", 1, OLED_TEXT_CENTER(strlen("Flujo")));
-            hal_OLED_print(flow1_string, 3, 1);
-            hal_OLED_print(flow2_string, 5, 1);
+            hal_OLED_print(flow2_string, 3, 1);
+            hal_OLED_print(flow1_string, 5, 1);
         }
         else if(timer0_seconds >= 20){
             if(flow_cleared == false){
