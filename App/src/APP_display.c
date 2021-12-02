@@ -1,6 +1,6 @@
 #include "APP_display.h"
 
-/*void display_task(void* arg)
+void display_task(void* arg)
 {
     char flow1_string[15], flow2_string[15], hum1_string[15], hum2_string[15];
     double timer0_seconds;
@@ -19,6 +19,7 @@
                 timer_start(TMR_GROUP_0, TMR_NUM_0);
                 timer_set_counter_value(TMR_GROUP_0, TMR_NUM_0, 0);
                 isButtonPushed = false;
+
             }
             else {isButtonPushed = false;}
         }
@@ -30,7 +31,7 @@
 
         timer_get_counter_time_sec(TMR_GROUP_0, TMR_NUM_0, &timer0_seconds);
 
-        if(timer0_seconds < 10){
+        if((timer0_seconds < 10)){
             flow_cleared = false;
             hal_OLED_print("Humedad", 1, OLED_TEXT_CENTER(strlen("Humedad")));
             hal_OLED_print(hum1_string, 3, 1);
@@ -59,9 +60,9 @@
         printf("Timer 0 Seconds : %.2f\n", timer0_seconds);
         vTaskDelay(600/portTICK_PERIOD_MS);
     }
-}*/
+}
 
-/*void display_off_task(void* arg)
+void display_off_task(void* arg)
 {
     while(1){
         printf("ggggg\n");
@@ -70,4 +71,4 @@
         vTaskDelay(50/portTICK_PERIOD_MS);
         vTaskSuspend(NULL); //Suspend current task
     }
-}*/
+}

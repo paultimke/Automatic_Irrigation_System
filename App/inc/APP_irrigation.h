@@ -15,6 +15,7 @@
 
 /*-------------------------Variables----------------------*/
 extern int is_time_task_active;
+extern int time_task_finished;
 
 /*-----------------------Prototypes--------------------*/
 

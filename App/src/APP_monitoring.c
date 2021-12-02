@@ -7,7 +7,11 @@ void flow_monitor_task(void* arg)
         flow_rate_s2 = hal_flowsensor_read(FLOW_SENSOR_2);
         printf("Flow rate 1: %5.2f L/min\n",flow_rate_s1);
         printf("Flow rate 2: %5.2f L/min\n",flow_rate_s2);
-
+        if(time_task_finished == 1){
+            hal_OLED_clear();
+            vTaskDelay(100/portTICK_PERIOD_MS);
+            time_task_finished =0;
+        }
         vTaskDelay(10000/portTICK_PERIOD_MS);
     }
 }
