@@ -2,6 +2,8 @@
 #define USR_MQTT_H
 
 /*------------------Includes-------------------*/
+#include "main.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include "esp_netif.h"
@@ -11,12 +13,12 @@
 #include "esp_event.h"
 #include "protocol_examples_common.h"
 #include "mqtt_client.h"
-#include "esp_log.h"
 #include "lwip/sockets.h"
 #include "lwip/dns.h"
 #include "lwip/netdb.h"
 
 /*----------------Macros-----------------*/
+#define MQTT_TAG            ("MQTT")
 #define ROW1_VALVE_OFF      (0)
 #define ROW1_VALVE_ON       (1)
 #define ROW2_VALVE_OFF      (2)
@@ -31,5 +33,7 @@ void mqtt_init(void);
 /*-----------------Global variables-----------------*/
 extern esp_mqtt_client_handle_t client;
 extern uint8_t valve_state;
+extern uint8_t global_hum_row1, global_hum_row2;
+
 
 #endif //USR_MQTT.H
