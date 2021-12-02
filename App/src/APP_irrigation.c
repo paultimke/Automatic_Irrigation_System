@@ -72,6 +72,11 @@ void timed_water_task(void* arg)
             vTaskDelay(100/portTICK_PERIOD_MS);
             vTaskSuspend(auto_valve_row2_task_handle);
             vTaskSuspend(auto_valve_row1_task_handle);
+            esp_mqtt_client_publish(client, "/riego2/estadovalvula1", "1", 0, 1, 0);
+            esp_mqtt_client_publish(client, "/riego2/estadovalvula2", "1", 0, 1, 0);
+            valve_state = 1;
+            vTaskDelay(100/portTICK_PERIOD_MS);
+            valve_state = 3;
             //hal_OLED_clear();
             ESP_LOGI(AUTO_TAG, "Automatic and Display tasks suspended");
             tasks_suspended = true;
@@ -105,6 +110,7 @@ void timed_water_task(void* arg)
             tasks_suspended = false;
             ESP_LOGI(AUTO_TAG, "Automatic and Display tasks resumed");
             is_time_task_active = 0;
+            valve_state = 0;
             //Suspends current task, which will be resumed on each Mqtt event regarding this task
             vTaskSuspend(NULL);
         }

@@ -17,10 +17,10 @@ int is_time_task_active = 0;
 void app_main(void)
 {
     //Initialization
-    hal_OLED_init();
-    hal_OLED_disp_image(yodita_glcd_bmp, YODITA_GLCD_WIDTH, YODITA_GLCD_HEIGHT, 2, 40);
-    vTaskDelay(10000/portTICK_PERIOD_MS);
-    hal_OLED_clear();
+    //hal_OLED_init();
+    //hal_OLED_disp_image(yodita_glcd_bmp, YODITA_GLCD_WIDTH, YODITA_GLCD_HEIGHT, 2, 40);
+    //vTaskDelay(10000/portTICK_PERIOD_MS);
+    //hal_OLED_clear();
 
     //Print image on display while waiting for initialization to be done
     //hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);

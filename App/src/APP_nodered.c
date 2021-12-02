@@ -59,9 +59,11 @@ void nodered_task(void* arg)
             isRow1_active = false;
             isRow2_active = false;
         }
-
-        esp_mqtt_client_publish(client, "/riego2/estadovalvula1", str_is_valve1_on, 0, 1, 0);
-        esp_mqtt_client_publish(client, "/riego2/estadovalvula2", str_is_valve2_on, 0, 1, 0);
+        if(is_time_task_active == 0){
+            esp_mqtt_client_publish(client, "/riego2/estadovalvula1", str_is_valve1_on, 0, 1, 0);
+            esp_mqtt_client_publish(client, "/riego2/estadovalvula2", str_is_valve2_on, 0, 1, 0);
+        }
+        
 
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
