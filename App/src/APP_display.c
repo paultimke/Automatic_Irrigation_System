@@ -1,6 +1,6 @@
 #include "APP_display.h"
 
-void display_task(void* arg)
+/*void display_task(void* arg)
 {
     char flow1_string[15], flow2_string[15], hum1_string[15], hum2_string[15];
     double timer0_seconds;
@@ -12,7 +12,7 @@ void display_task(void* arg)
         if(xQueueReceiveFromISR(gpio_evt_queue, &isButtonPushed, NULL) == pdTRUE)
         {
             //--Debouncing for button press--
-            vTaskDelay(50/portTICK_PERIOD_MS);    //50ms of debounce time
+            vTaskDelay(10/portTICK_PERIOD_MS);    //50ms of debounce time
             if((isButtonPushed == true) && (usr_gpio_read(BUTTON)))
             {
                 ESP_LOGI("BUTTON", "Button interrupt generated");
@@ -59,9 +59,9 @@ void display_task(void* arg)
         printf("Timer 0 Seconds : %.2f\n", timer0_seconds);
         vTaskDelay(600/portTICK_PERIOD_MS);
     }
-}
+}*/
 
-void display_off_task(void* arg)
+/*void display_off_task(void* arg)
 {
     while(1){
         printf("ggggg\n");
@@ -70,4 +70,4 @@ void display_off_task(void* arg)
         vTaskDelay(50/portTICK_PERIOD_MS);
         vTaskSuspend(NULL); //Suspend current task
     }
-}
+}*/

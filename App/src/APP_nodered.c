@@ -5,6 +5,7 @@ void nodered_task(void* arg)
 	char str_humidity_1[10], str_humidity_2[10];
     char str_flow_1[10], str_flow_2[10];
     bool isRow1_active = false, isRow2_active = false;
+    is_time_task_active = 0;
 
     while(1){
         // Prepare data to transmit
@@ -16,13 +17,12 @@ void nodered_task(void* arg)
         // Publish message
         esp_mqtt_client_publish(client, "/riego2/sensorhumedad1", str_humidity_1, 0, 1, 0);
         esp_mqtt_client_publish(client, "/riego2/sensorhumedad2", str_humidity_2, 0, 1, 0);
-        esp_mqtt_client_publish(client, "/riego2/sensorflujo1", str_flow_1, 0, 1, 0);
-        esp_mqtt_client_publish(client, "/riego2/sensorflujo2", str_flow_2, 0, 1, 0);
+        esp_mqtt_client_publish(client, "/riego2/sensorflujo2", str_flow_1, 0, 1, 0);
+        esp_mqtt_client_publish(client, "/riego2/sensorflujo1", str_flow_2, 0, 1, 0);
         vTaskDelay(300/portTICK_PERIOD_MS);
 
         printf("Valve state: %d\n", valve_state);
-
-        if((valve_state == ROW1_VALVE_OFF) && (isRow1_active == true)){
+        if((valve_state == ROW1_VALVE_OFF) && (isRow1_active == true) && (is_time_task_active == 0)){
             vTaskResume(auto_valve_row1_task_handle);
             hal_evalve_off(EVALVE_UNIT_0);
             sprintf(str_is_valve1_on, "%f", 0.0);
@@ -40,11 +40,14 @@ void nodered_task(void* arg)
             sprintf(str_is_valve2_on, "%f", 1.0);
             isRow2_active = true;
         }
-        else if((valve_state == ROW2_VALVE_OFF) && (isRow2_active == true)){
+        else if((valve_state == ROW2_VALVE_OFF) && (isRow2_active == true) && (is_time_task_active == 0)){
             vTaskResume(auto_valve_row2_task_handle);
             hal_evalve_off(EVALVE_UNIT_1);
             sprintf(str_is_valve2_on, "%f", 0.0);
             isRow2_active = false;
+        }
+        else {
+
         }
         
         /** Safety measure to prevent valves being left on indefinetely, in case it

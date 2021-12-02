@@ -116,6 +116,7 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             if(strcmp(strTopic, "/riego2/tiempo_manual") == 0){
                 irrigation_minutes = (uint16_t) atoi(strData);
                 printf("\n\nIRRIGATION MINUTES: %d\n\n", irrigation_minutes);
+                is_time_task_active = 1;
                 vTaskResume(timed_water_task_handle);
             }
  

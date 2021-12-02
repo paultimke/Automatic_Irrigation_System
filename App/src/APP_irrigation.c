@@ -1,6 +1,5 @@
 #include "APP_irrigation.h"
 
-
 void auto_valve_row1_task(void* arg)
 {
     #define AUTO_IRRIGATION_STARTED 1
@@ -8,7 +7,7 @@ void auto_valve_row1_task(void* arg)
     uint8_t desired_hum_row1;
 
     while(1){
-        //printf("********TASK ACTIVA VALVE 1********\n\n");
+        printf("********TASK ACTIVA VALVE 1********\n\n");
 
         desired_hum_row1 = global_hum_row1;
         if(global_hum_row1 == 0){
@@ -35,7 +34,7 @@ void auto_valve_row2_task(void* arg)
     uint8_t desired_hum_row2;
 
     while(1){
-        //printf("********TASK ACTIVA VALVE 2********\n\n");
+        printf("********TASK ACTIVA VALVE 2********\n\n");
 
         desired_hum_row2 = global_hum_row2;
         if(global_hum_row2 == 0){
@@ -67,17 +66,18 @@ void timed_water_task(void* arg)
         //vTaskSuspend(display_task_handle);
 
         /*As this is a manual mode, automatic irrigation is turned off to avoid conflicts*/
-        #ifdef AUTO_IRRIGATION_STARTED
+        //#ifdef AUTO_IRRIGATION_STARTE
         if(tasks_suspended == false){
-            vTaskSuspend(auto_valve_row1_task_handle);
+            is_time_task_active = 1;
+            vTaskDelay(100/portTICK_PERIOD_MS);
             vTaskSuspend(auto_valve_row2_task_handle);
-
+            vTaskSuspend(auto_valve_row1_task_handle);
             //hal_OLED_clear();
             ESP_LOGI(AUTO_TAG, "Automatic and Display tasks suspended");
             tasks_suspended = true;
         }
         
-        #endif
+        //#endif
         
         /*Start timer to count how long irrigation will occur*/
         timer_start(TMR_GROUP_0, TMR_NUM_1);
@@ -92,7 +92,7 @@ void timed_water_task(void* arg)
         if(current_time > irrigation_seconds){
             timer_pause(TMR_GROUP_0, TMR_NUM_1);
             timer_set_counter_value(TMR_GROUP_0, TMR_NUM_1, 0);
-            hal_OLED_clear();
+            //hal_OLED_clear();
 
             hal_evalve_off(EVALVE_UNIT_0);
             hal_evalve_off(EVALVE_UNIT_1);
@@ -104,6 +104,7 @@ void timed_water_task(void* arg)
 
             tasks_suspended = false;
             ESP_LOGI(AUTO_TAG, "Automatic and Display tasks resumed");
+            is_time_task_active = 0;
             //Suspends current task, which will be resumed on each Mqtt event regarding this task
             vTaskSuspend(NULL);
         }

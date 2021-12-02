@@ -6,7 +6,7 @@
 
 
 /*-----------------Prototypes------------------*/
-void display_task(void* arg);
-void display_off_task(void* arg);
+//void display_task(void* arg);
+//void display_off_task(void* arg);
 
 #endif //APP_DISPLAY_H

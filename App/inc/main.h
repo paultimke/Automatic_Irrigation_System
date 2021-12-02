@@ -36,8 +36,8 @@ extern TaskHandle_t humidity_monitor_task_handle;
 extern TaskHandle_t auto_valve_row1_task_handle;
 extern TaskHandle_t auto_valve_row2_task_handle;
 extern TaskHandle_t nodered_task_handle;
-extern TaskHandle_t display_task_handle;
-extern TaskHandle_t display_off_task_handle;
+//extern TaskHandle_t display_task_handle;
+//extern TaskHandle_t display_off_task_handle;
 extern TaskHandle_t timed_water_task_handle;
 
 extern xQueueHandle gpio_evt_queue;
