@@ -1,4 +1,4 @@
-set(SOURCES flow_sensor.c)
+set(SOURCES HAL_flow_sensor.c)
 
 idf_component_register(SRCS ${SOURCES}
                         INCLUDE_DIRS .

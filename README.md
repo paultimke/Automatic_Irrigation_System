@@ -22,10 +22,22 @@ files that provide set of directives and instructions describing the project's s
 Below is short explanation of remaining files in the project folder.
 
 ```
-├── CMakeLists.txt
-├── main
-│   ├── CMakeLists.txt
-│   └── main.c
+├── App
+│   ├── inc
+│   │   └──main.h
+│   └── src 
+│       └──main.c
+├── Peripherals
+│   ├── usr_adc
+│   ├── usr_gpio
+│   ├── usr_i2c
+│   ├── usr_mqtt
+│   └── usr_pcnt
+├── User_HAL
+│   ├── HAL_ech2o_ec5
+│   ├── HAL_flow_sensor
+│   ├── HAL_OLED_display
+│   └── HAL_solenoid_valve
 └── README.md                  This is the file you are currently reading
 ```
 Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 

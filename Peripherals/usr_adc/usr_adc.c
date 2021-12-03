@@ -13,7 +13,6 @@ void usr_adc_init(void)
     
     //Calibration
     adc_characteristics = (esp_adc_cal_characteristics_t*) calloc(1, sizeof(esp_adc_cal_characteristics_t));
-    //adc_characteristics gets initialized
     esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_12, 
                               ADC_VREF, adc_characteristics);  
 
@@ -44,12 +43,13 @@ uint32_t usr_adc_getResult(adc_channel_t channel)
     adc_reading = mode(adc_samples);
 
     //Convert raw result to voltage in mV
+    /*
     #ifdef ADC_CALIBRATION_ON
       uint32_t result = esp_adc_cal_raw_to_voltage(adc_reading, adc_characteristics);
     #else
       uint32_t result = adc_reading * ADC_VREF / ADC_MAX_VALUE;
     #endif
-    printf("\nVoltage: %d\n", result);
+    */
 
     return adc_reading;
 }

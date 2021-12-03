@@ -3,6 +3,7 @@
 static const char *TAG = "MQTT_CLIENT";
 esp_mqtt_client_handle_t client;
 uint8_t valve_state;
+uint8_t global_hum_row1, global_hum_row2;
 
 void mqtt_app_start(void)
 {
@@ -42,7 +43,7 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
     int msg_id;
     static char strTopic[20];
     static char strData[10];
-    
+
     // your_context_t *context = event->context;
     switch (event->event_id) {
         case MQTT_EVENT_CONNECTED:
@@ -53,6 +54,19 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
             msg_id = esp_mqtt_client_subscribe(client, "/riego2/valvula2", 0);
             ESP_LOGI(TAG, "sent subscribe successful to /riego2/valvula2, msg_id=%d", msg_id);
+
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/riego2/desired_hum1", 0);
+            ESP_LOGI(TAG, "sent subscribe successful to /riego2/desired_hum1, msg_id=%d", msg_id);
+
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/riego2/desired_hum2", 0);
+            ESP_LOGI(TAG, "sent subscribe successful to /riego2/desired_hum2, msg_id=%d", msg_id);
+
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/riego2/tiempo_manual", 0);
+            ESP_LOGI(TAG, "sent subscribe successful to /riego2/tiempo_manual, msg_id=%d", msg_id);
+            
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -64,7 +78,7 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_PUBLISHED:
-            ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+            //ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_DATA:
             ESP_LOGI(TAG, "MQTT_EVENT_DATA");
@@ -72,24 +86,40 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             sprintf(strTopic,"%.*s", event->topic_len, event->topic);
             sprintf(strData,"%.*s", event->data_len, event->data);
 
-            if(strcmp(strTopic, "/riego2/valvula1") == 0){
-                if(strcmp(strData, "ON") == 0){
-                    valve_state = ROW1_VALVE_ON;
-                    
+            //Valve Activation 1
+            if((strcmp(strTopic, "/riego2/valvula1") == 0) && (strcmp(strData, "ON") == 0)){
+                valve_state = ROW1_VALVE_ON;     
+                printf("ENTRO\n\n");
             }
-            else {
+            else if((strcmp(strTopic, "/riego2/valvula1") == 0) && (strcmp(strData, "OFF") == 0)){
                 valve_state = ROW1_VALVE_OFF;
             }
+
+            if((strcmp(strTopic, "/riego2/valvula2") == 0) && (strcmp(strData, "ON") == 0)){
+                valve_state = ROW2_VALVE_ON;
             }
-        
-            if(strcmp(strTopic, "/riego2/valvula2") == 0){
-                if(strcmp(strData, "ON") == 0){
-                    valve_state = ROW2_VALVE_ON;
-                }
-            else {
+            else if((strcmp(strTopic, "/riego2/valvula2") == 0) && (strcmp(strData, "OFF") == 0)){
                 valve_state = ROW2_VALVE_OFF;
             }
+
+            //Humidity level set
+            if(strcmp(strTopic, "/riego2/desired_hum1") == 0){
+                global_hum_row1 = (uint8_t) atoi(strData);
+                ESP_LOGI(TAG, "HUM 1 LIMIT UPDATE: %d", global_hum_row1);
             }
+            if(strcmp(strTopic, "/riego2/desired_hum2") == 0){
+                global_hum_row2 = (uint8_t) atoi(strData);
+                ESP_LOGI(TAG, "HUM 1 LIMIT UPDATE: %d", global_hum_row2);
+            }
+
+            //Irrigation time set
+            if(strcmp(strTopic, "/riego2/tiempo_manual") == 0){
+                irrigation_minutes = (uint16_t) atoi(strData);
+                printf("\n\nIRRIGATION MINUTES: %d\n\n", irrigation_minutes);
+                is_time_task_active = 1;
+                vTaskResume(timed_water_task_handle);
+            }
+ 
 
             break;
         case MQTT_EVENT_ERROR:
@@ -98,7 +128,6 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
         default:
             ESP_LOGI(TAG, "Other event id:%d", event->event_id);
             break;
-
     }
     return ESP_OK;
 }
