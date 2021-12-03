@@ -32,3 +32,14 @@ El programa también esta estructurado dentro de un modelo de capas, que empieza
 │   └── HAL_solenoid_valve
 └── README.md                  This is the file you are currently reading
 ```
+La lógica general del código es la que se muestra en este diagrama de flujo:
+
+![logica_programa](https://user-images.githubusercontent.com/87957114/144633934-4d7cf7fb-4671-46ea-ba52-e6c500614ac3.png)
+
+## Imágenes del Proyecto
+
+<p float="left">
+  <img width="210" height="300" alt="inv1" src="https://user-images.githubusercontent.com/87957114/144634263-2a2472b4-2ebd-45b0-baa8-a117880d4c79.png" />
+  <img width="400" height="300" alt="inv2" src="https://user-images.githubusercontent.com/87957114/144634292-6ef19086-cee0-467b-80e1-c1db5560740f.png" />
+  <img width="210" height="300" alt="caja" src="https://user-images.githubusercontent.com/87957114/144634327-b0df1801-1c2e-4808-8500-4af789ff3822.png" />
+</p>
