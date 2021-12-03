@@ -34,7 +34,7 @@ El programa también esta estructurado dentro de un modelo de capas, que empieza
 ```
 La lógica general del código es la que se muestra en este diagrama de flujo:
 
-![logica_programa](https://user-images.githubusercontent.com/87957114/144633934-4d7cf7fb-4671-46ea-ba52-e6c500614ac3.png)
+<img width="1143" alt="Screen Shot 2021-12-02 at 10 35 56" src="https://user-images.githubusercontent.com/87957114/144654226-189b6eed-1c12-4541-99d1-14ce94090045.png">
 
 ## Imágenes del Proyecto
 
