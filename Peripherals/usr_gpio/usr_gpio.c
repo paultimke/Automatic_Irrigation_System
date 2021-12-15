@@ -2,6 +2,8 @@
 
 void usr_gpio_init(void){
 
+    #define GPIO_STARTED    1   
+
     gpio_config_t io_conf = {};
     io_conf.intr_type = GPIO_INTR_POSEDGE;
     io_conf.mode = GPIO_MODE_INPUT;

@@ -1,9 +1,13 @@
+/**
+ * Equipo 5 - Automatizacion Industrial
+ * Tecnologico de Monterrey, Campus Chihuahua
+*/
+
 #ifndef APP_DISPLAY_H
 #define APP_DISPLAY_H
 
 /*------------------Includes---------------------*/
 #include "main.h"
-
 
 /*-----------------Prototypes------------------*/
 void display_task(void* arg);

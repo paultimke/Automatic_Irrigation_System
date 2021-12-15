@@ -44,7 +44,6 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
     static char strTopic[20];
     static char strData[10];
 
-    // your_context_t *context = event->context;
     switch (event->event_id) {
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
@@ -78,7 +77,6 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_PUBLISHED:
-            //ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_DATA:
             ESP_LOGI(TAG, "MQTT_EVENT_DATA");
@@ -119,7 +117,6 @@ esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
                 is_time_task_active = 1;
                 vTaskResume(timed_water_task_handle);
             }
- 
 
             break;
         case MQTT_EVENT_ERROR:

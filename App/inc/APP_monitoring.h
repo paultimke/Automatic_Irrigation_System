@@ -1,3 +1,8 @@
+/**
+ * Equipo 5 - Automatizacion Industrial
+ * Tecnologico de Monterrey, Campus Chihuahua
+*/
+
 #ifndef APP_MONITORING_H
 #define APP_MONITORING_H
 

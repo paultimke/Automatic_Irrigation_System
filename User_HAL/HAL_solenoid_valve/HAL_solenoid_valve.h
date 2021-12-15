@@ -14,6 +14,7 @@ typedef enum{
 } evalve_unit_t;
 
 /*--------------------Prototypes-------------------*/
+void hal_evalve_init(void);
 void hal_evalve_on(evalve_unit_t evalve_unit);
 void hal_evalve_off(evalve_unit_t evalve_unit);
 

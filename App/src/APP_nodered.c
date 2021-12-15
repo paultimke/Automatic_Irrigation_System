@@ -1,5 +1,15 @@
 #include "APP_nodered.h"
 
+void app_nodered_init(void){
+
+    // Initialize communication protocol
+    mqtt_init();
+    mqtt_app_start();
+
+    return;
+}
+
+
 void nodered_task(void* arg)
 {
 	char str_humidity_1[10], str_humidity_2[10];

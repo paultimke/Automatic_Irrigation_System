@@ -1,3 +1,8 @@
+/**
+ * Equipo 5 - Automatizacion Industrial
+ * Tecnologico de Monterrey, Campus Chihuahua
+*/
+
 #ifndef USR_TIMER_H
 #define USR_TIMER_H
 

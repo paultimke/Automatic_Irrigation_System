@@ -13,6 +13,7 @@ void usr_adc_init(void)
     
     //Calibration
     adc_characteristics = (esp_adc_cal_characteristics_t*) calloc(1, sizeof(esp_adc_cal_characteristics_t));
+    //adc_characteristics gets initialized
     esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_12, 
                               ADC_VREF, adc_characteristics);  
 
@@ -35,22 +36,13 @@ uint32_t usr_adc_getResult(adc_channel_t channel)
     adc_power_acquire();
     for(uint8_t i = 0; i<ADC_SAMPLE_COUNT; i++){
         adc_samples[i] = adc1_get_raw(channel);
-        vTaskDelay(1/ portTICK_PERIOD_MS);
-    }
+        vTaskDelay(1/portTICK_PERIOD_MS);
+      }
     adc_power_release();
 
     //Calculate mode to describe result more accurately
     adc_reading = mode(adc_samples);
-
-    //Convert raw result to voltage in mV
-    /*
-    #ifdef ADC_CALIBRATION_ON
-      uint32_t result = esp_adc_cal_raw_to_voltage(adc_reading, adc_characteristics);
-    #else
-      uint32_t result = adc_reading * ADC_VREF / ADC_MAX_VALUE;
-    #endif
-    */
-
+    
     return adc_reading;
 }
 

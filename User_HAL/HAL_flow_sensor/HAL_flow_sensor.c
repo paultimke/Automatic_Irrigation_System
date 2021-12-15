@@ -2,8 +2,7 @@
 
 void hal_flowsensor_init(void)
 {
-    /* Initialize Pulse Counter functions*/
-
+    /* Initialize Pulse Counter functions */
     usr_pcnt_init(PCNT_UNIT_0);         //Initialized for Flow sensor 0
     pcnt_counter_pause(PCNT_UNIT_0);
           

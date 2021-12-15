@@ -19,8 +19,7 @@ extern int time_task_finished;
 
 /*-----------------------Prototypes--------------------*/
 
-/**
- * @brief Both auto_valve_rowX tasks are the tasks that open valves
+/* Both auto_valve_rowX tasks are the tasks that open valves
  * automatically based on the readings of the soil mositure sensors and 
  * the specified thresholds (desired_hum_rowX). However this threshold can 
  * be changed within the NodeRed User Interface.
@@ -28,8 +27,7 @@ extern int time_task_finished;
 void auto_valve_row1_task(void* arg);
 void auto_valve_row2_task(void* arg);
 
-/**
- * @brief This task activates valves manually and leaves them open during
+/* This task activates valves manually and leaves them open during
  * the amount of time specified by the user within the NodeRed User Interface
  */ 
 void timed_water_task(void* arg);

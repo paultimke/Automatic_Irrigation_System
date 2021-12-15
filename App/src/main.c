@@ -3,7 +3,7 @@
 //Queues
 xQueueHandle gpio_evt_queue = NULL;
 
-//Tasks
+//Task Handles
 TaskHandle_t flow_monitor_task_handle = NULL;
 TaskHandle_t humidity_monitor_task_handle = NULL;
 TaskHandle_t auto_valve_row1_task_handle = NULL;
@@ -14,23 +14,20 @@ TaskHandle_t display_off_task_handle = NULL;
 TaskHandle_t timed_water_task_handle = NULL;
 int is_time_task_active = 0;
 
+
 void app_main(void)
 {
-    //Initialization
+    //Display Initialization
     hal_OLED_init();
-    hal_OLED_disp_image(yodita_glcd_bmp, YODITA_GLCD_WIDTH, YODITA_GLCD_HEIGHT, 2, 40);
-    vTaskDelay(2000/portTICK_PERIOD_MS);
-    hal_OLED_clear();
-
     //Print image on display while waiting for initialization to be done
     hal_OLED_disp_image(granja_hogar_glcd_bmp, GRANJA_HOGAR_GLCD_WIDTH, GRANJA_HOGAR_GLCD_HEIGHT, 2, 40);
 
-    usr_gpio_init();
+    // Hardware and Peripherals Initialization
     usr_timer_init();
+    hal_evalve_init();
     hal_flowsensor_init();
     hal_humidity_sensor_init();
-    mqtt_init();
-    mqtt_app_start();
+    app_nodered_init();
 
     hal_OLED_clear();
 
@@ -50,7 +47,6 @@ void app_main(void)
     xTaskCreate(timed_water_task, "timed_water_task", 4096, NULL, 10, &timed_water_task_handle);
     hal_OLED_clear();
 
-
     //Create the rest of the tasks
     xTaskCreatePinnedToCore(display_off_task, "display_off_task", 2048, NULL, 15, &display_off_task_handle, 1);
     xTaskCreate(flow_monitor_task, "flow_monitor_task", 2048, NULL, 5, &flow_monitor_task_handle);
@@ -61,29 +57,28 @@ void app_main(void)
 
 }
 
-/*---------------------Interrupt Service Routines (ISR)-------------------*/
 
+/*--------------------------Interrupt Service Routines (ISR)---------------------------*/
+
+/* GPIO interrupt serves to turn the display on after each button press */
 void IRAM_ATTR gpio_isr_handler(void* arg)
 {
     bool isButtonPushed = true;
     xTaskResumeFromISR(display_task_handle);
     xQueueSendFromISR(gpio_evt_queue, &isButtonPushed, NULL);
-   
 }
 
 
+/* Timer 0 serves to set the amount of time the display will be on after each button press,
+ * It is turned off when the alarm value is reached and the interrupt is triggered. */
 void IRAM_ATTR timer0_isr_hanlder(void* arg)
 {
-    //Timer overflows each second
-    //timer0_overflow++;
     TIMERG0.int_clr_timers.t0 = 1; // Clear interrupt bit
-    //if(timer0_overflow > 25){
 
         /** Resume a task specifically to clear display before suspending the
-         * display task, to ensure that when it is suspended, there are no pixels left on.
-         */
+         * display task, to ensure that when it is suspended, there are no pixels left on. */
         xTaskResumeFromISR(display_off_task_handle);
         vTaskSuspend(display_task_handle);
-    //}
+
     TIMERG0.hw_timer[0].config.alarm_en = TIMER_ALARM_EN;   //Re-enable alarm for next interrupt
 }

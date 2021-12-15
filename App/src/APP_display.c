@@ -12,7 +12,7 @@ void display_task(void* arg)
         if(xQueueReceiveFromISR(gpio_evt_queue, &isButtonPushed, NULL) == pdTRUE)
         {
             //--Debouncing for button press--
-            vTaskDelay(10/portTICK_PERIOD_MS);    //50ms of debounce time
+            vTaskDelay(20/portTICK_PERIOD_MS);    //20ms of debounce time
             if((isButtonPushed == true) && (usr_gpio_read(BUTTON)))
             {
                 ESP_LOGI("BUTTON", "Button interrupt generated");
@@ -65,7 +65,6 @@ void display_task(void* arg)
 void display_off_task(void* arg)
 {
     while(1){
-        printf("ggggg\n");
         timer_pause(TMR_GROUP_0, TMR_NUM_0);
         hal_OLED_clear();   //Clear display so that when display_task is suspended, no pixels are left on
         vTaskDelay(50/portTICK_PERIOD_MS);
