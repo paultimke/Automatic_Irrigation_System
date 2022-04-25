@@ -1,5 +1,7 @@
 # _Sistema de Riego Automatizado - Equipo 5_
 
+**** Esta versión del proyecto contiene bugs, debido a la falta de implementación de funciones Thread-safe ****
+
 El proyecto realizado es la automatización de un sistema de riego para un invernadero basado en el ESP32 con su framework oficial (ESP-IDF). Funciona mediante un sistema de control con retroalimentación por parte de sensores de humedad de suelo y electroválvulas para activar el riego a partir del límite de humedad establecido, el cual se define por default en el programa o se puede cambiar más tarde manualmente en la interfaz de usuario en la plataforma de NodeRed.
 
 NodeRed esta implementado a traves de una red wifi local en el invernadero, y se utiliza el protocolo de MQTT para la comunicación entre el servidor y el cliente (ESP32). Con esto se pueden monitorear variables, abrir o cerrar valvulas, establecer límites de humedad para cada línea de riego y activar riego por tiempos, ingresando los minutos de riego. La interfaz es la siguiente:

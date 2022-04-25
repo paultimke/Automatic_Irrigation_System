@@ -7,5 +7,6 @@
     "app_irrigation.h": "c",
     "app_display.h": "c",
     "usr_timer.h": "c"
-  }
+  },
+  "idf.adapterTargetName": "esp32"
 }
