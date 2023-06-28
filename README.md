@@ -10,11 +10,9 @@ The User Interface is implemented in NodeRed with a local wifi network in the Gr
 
 Additionally, variables can be monitored in-field through the SSD1306-based OLED display, which is located in the control box. To avoid the display being always on and save energy, the screen is turned on with a button to indicate someone wants to see it and automatically turns off after a set amount of time.
 
-El programa soporta actualmente dos lineas de riego, pero la estructura del programa permite quitar o poner más lineas de riego de manera sencilla. Para esto, se deben agregar los cambios correspondientes en usr_adc, HAL_ech2o_ec5 y APP_monitoring, ademas de los demas archivos de aplicación en los que se quiera utilizar. 
 
-
-## Estructura del Programa
-El programa también esta estructurado dentro de un modelo de capas, que empieza por los drivers de los periféricos del microcontrolador, luego la capa de abstracción de hardware, donde se definen librerias propias para los dispositivos de hardware utilizados y finalmente la aplicación. La estructura de archivos es la siguiente:
+## Program Structure
+The program is structured with a layer model, which starts with the Board Support Package (Peripherals directory) containing the drivers for the used peripherals of the microcontroller. In the Hardware Abstraction Layer, libraries for the hardware devices are defined and finally, the App directory contains the main program logic and application. The file structure is the folliwng.
 
 ```
 ├── App
@@ -34,7 +32,8 @@ El programa también esta estructurado dentro de un modelo de capas, que empieza
 │   └── HAL_solenoid_valve
 └── README.md                  This is the file you are currently reading
 ```
-La lógica general del código es la que se muestra en este diagrama de flujo:
+
+The general logic of the code is the following:
 
 <img width="1143" alt="Screen Shot 2021-12-02 at 10 35 56" src="https://user-images.githubusercontent.com/87957114/144654226-189b6eed-1c12-4541-99d1-14ce94090045.png">
 
