@@ -2,14 +2,13 @@
 
 **** Esta versión del proyecto contiene bugs, debido a la falta de implementación de funciones Thread-safe ****
 
-El proyecto realizado es la automatización de un sistema de riego para un invernadero basado en el ESP32 con su framework oficial (ESP-IDF). Funciona mediante un sistema de control con retroalimentación por parte de sensores de humedad de suelo y electroválvulas para activar el riego a partir del límite de humedad establecido, el cual se define por default en el programa o se puede cambiar más tarde manualmente en la interfaz de usuario en la plataforma de NodeRed.
+The project is a Greenhouse automated irrigation system based on the ESP32 and the official ESP-IDF development framerwork. It works through a closed-loop control system with feedback from ground humidity and water flow sensors, while actuation is done with solenoid valves to allow water flow based on the established humidity limit, which is defined by default in the program, but can be easily changed through the User Interface in the NodeRed platform.
 
-NodeRed esta implementado a traves de una red wifi local en el invernadero, y se utiliza el protocolo de MQTT para la comunicación entre el servidor y el cliente (ESP32). Con esto se pueden monitorear variables, abrir o cerrar valvulas, establecer límites de humedad para cada línea de riego y activar riego por tiempos, ingresando los minutos de riego. La interfaz es la siguiente:
+The User Interface is implemented in NodeRed with a local wifi network in the Greenhouse and utilizes the MQTT protocol for communications between the server and the client (ESP32). Through this, variables like water flow and humidity can be monitored, valves can be manually opened or closed, humidity thresholds can be established for Automatic mode, or time intervals can be set for time-based irrigation. The UI is the following:
 
 <img width="1128" alt="nodered_ui" src="https://user-images.githubusercontent.com/87957114/144632451-141f0767-4ce2-47ec-99ed-3d90f93cc7d0.png">
 
-
-Adicionalmente, las variables se pueden monitorear mediante el display OLED basado en el chip SSD1306 que se encuentra en la caja de control. Para evitar que el display este prendido siempre aunque nadie lo este viendo y ahorrar energía, la pantalla se prende con un botón para indicar que alguien lo quiere ver y se apaga automaticamente despues de un tiempo (dependiendo del valor de la alarma del Timer 0, Grupo 0).
+Additionally, variables can be monitored in-field through the SSD1306-based OLED display, which is located in the control box. To avoid the display being always on and save energy, the screen is turned on with a button to indicate someone wants to see it and automatically turns off after a set amount of time.
 
 El programa soporta actualmente dos lineas de riego, pero la estructura del programa permite quitar o poner más lineas de riego de manera sencilla. Para esto, se deben agregar los cambios correspondientes en usr_adc, HAL_ech2o_ec5 y APP_monitoring, ademas de los demas archivos de aplicación en los que se quiera utilizar. 
 
@@ -39,7 +38,7 @@ La lógica general del código es la que se muestra en este diagrama de flujo:
 
 <img width="1143" alt="Screen Shot 2021-12-02 at 10 35 56" src="https://user-images.githubusercontent.com/87957114/144654226-189b6eed-1c12-4541-99d1-14ce94090045.png">
 
-## Imágenes del Proyecto
+## Images of the project
 
 <p float="left">
   <img width="210" height="300" alt="inv1" src="https://user-images.githubusercontent.com/87957114/144634263-2a2472b4-2ebd-45b0-baa8-a117880d4c79.png" />
