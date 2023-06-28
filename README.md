@@ -1,4 +1,4 @@
-# _Sistema de Riego Automatizado - Equipo 5_
+# Automated Irrigation System
 
 **** Esta versión del proyecto contiene bugs, debido a la falta de implementación de funciones Thread-safe ****
 
