@@ -1,7 +1,5 @@
 # Automated Irrigation System
 
-**** Esta versión del proyecto contiene bugs, debido a la falta de implementación de funciones Thread-safe ****
-
 The project is a Greenhouse automated irrigation system based on the ESP32 and the official ESP-IDF development framerwork. It works through a closed-loop control system with feedback from ground humidity and water flow sensors, while actuation is done with solenoid valves to allow water flow based on the established humidity limit, which is defined by default in the program, but can be easily changed through the User Interface in the NodeRed platform.
 
 The User Interface is implemented in NodeRed with a local wifi network in the Greenhouse and utilizes the MQTT protocol for communications between the server and the client (ESP32). Through this, variables like water flow and humidity can be monitored, valves can be manually opened or closed, humidity thresholds can be established for Automatic mode, or time intervals can be set for time-based irrigation. The UI is the following:
